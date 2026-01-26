@@ -1,67 +1,45 @@
-/* General body styling */
-body {
-  margin: 0;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(circle at center, #000814, #001f3f);
-  font-family: 'Arial', sans-serif;
-  color: white;
+const canvas = document.getElementById('galaxy');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = [];
+const numStars = 200;
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+
+// Initialize stars
+for (let i = 0; i < numStars; i++) {
+  const angle = Math.random() * 2 * Math.PI;
+  const radius = Math.random() * Math.min(centerX, centerY);
+  const size = Math.random() * 2 + 0.5;
+  stars.push({angle, radius, size, speed: 0.0005 + Math.random() * 0.001});
 }
 
-/* Container for universe elements */
-.universe-container {
-  position: relative;
-  text-align: center;
-  z-index: 2;
+// Animate stars
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  stars.forEach(star => {
+    star.angle += star.speed;
+    const x = centerX + star.radius * Math.cos(star.angle);
+    const y = centerY + star.radius * Math.sin(star.angle);
+
+    ctx.beginPath();
+    ctx.arc(x, y, star.size, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
 }
 
-/* Foundation text: J&V's */
-.foundation-text {
-  font-size: 10vw;
-  color: rgba(255,255,255,0.1);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-weight: bold;
-  z-index: 1;
-  animation: pulse 3s ease-in-out infinite;
-}
+draw();
 
-/* Blue Universe text */
-.main-text {
-  font-size: 5vw;
-  position: relative;
-  z-index: 2;
-  color: #00cfff;
-  font-weight: bold;
-  text-shadow:
-    0 0 15px #00cfff,
-    0 0 30px #00cfff,
-    0 0 50px #00a7ff;
-}
-
-/* Galaxy canvas */
-#galaxy {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-/* Pulsing animation */
-@keyframes pulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.1; }
-  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.15; }
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .foundation-text { font-size: 15vw; }
-  .main-text { font-size: 8vw; }
-}
+// Handle window resize
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
