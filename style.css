@@ -2,12 +2,12 @@
 body {
   margin: 0;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at center, #001f3f, #000814);
+  background: radial-gradient(circle at center, #000814, #001f3f);
   font-family: 'Arial', sans-serif;
-  overflow: hidden;
   color: white;
 }
 
@@ -15,62 +15,53 @@ body {
 .universe-container {
   position: relative;
   text-align: center;
+  z-index: 2;
 }
 
 /* Foundation text: J&V's */
 .foundation-text {
-  font-size: 8vw; /* huge and dominant */
-  color: rgba(255,255,255,0.1); /* subtle, in the background */
+  font-size: 10vw;
+  color: rgba(255,255,255,0.1);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
   font-weight: bold;
+  z-index: 1;
+  animation: pulse 3s ease-in-out infinite;
 }
 
-/* Main text: Blue Universe */
+/* Blue Universe text */
 .main-text {
-  font-size: 4vw;
-  color: #00cfff; /* bright, glowing blue */
+  font-size: 5vw;
   position: relative;
   z-index: 2;
+  color: #00cfff;
   font-weight: bold;
   text-shadow:
-    0 0 10px #00cfff,
-    0 0 20px #00cfff,
-    0 0 30px #00f;
+    0 0 15px #00cfff,
+    0 0 30px #00cfff,
+    0 0 50px #00a7ff;
 }
 
-/* Floating stars */
-.stars {
+/* Galaxy canvas */
+#galaxy {
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  background: transparent;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-.stars::after {
-  content: '';
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  box-shadow:
-    20px 50px #fff,
-    80px 200px #fff,
-    150px 120px #fff,
-    220px 300px #fff,
-    300px 180px #fff,
-    400px 100px #fff,
-    500px 250px #fff;
-  animation: twinkle 3s infinite alternate;
+/* Pulsing animation */
+@keyframes pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.1; }
+  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.15; }
 }
 
-@keyframes twinkle {
-  0% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.3; transform: scale(0.8); }
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .foundation-text { font-size: 15vw; }
+  .main-text { font-size: 8vw; }
 }
