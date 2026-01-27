@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>J&V's Blue Universe</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <!-- Text Layer -->
   <div class="universe-container">
-    <h1 class="foundation-text">J&V's</h1>
-    <h2 class="main-text">Blue Universe</h2>
-    <canvas id="galaxy"></canvas>
+    <div class="foundation-text">J&V's</div>
+    <div class="main-text">Blue Universe</div>
   </div>
 
-  <!-- Welcome audio -->
-  <audio id="welcomeAudio" src="welcome.mp3"></audio>
+  <!-- Galaxy Canvas -->
+  <canvas id="galaxy"></canvas>
+
+  <!-- Welcome Audio (delayed & faded via JS) -->
+  <audio id="welcomeAudio" src="welcome.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>
