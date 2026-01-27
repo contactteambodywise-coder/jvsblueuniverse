@@ -26,7 +26,7 @@ canvas {
 /* LOGO CONTAINER */
 #logo-wrapper {
   position: absolute;
-  top: 80px; /* LOCKED */
+  top: 80px; /* Locked */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -35,49 +35,37 @@ canvas {
   white-space: nowrap;
 }
 
-/* BLUE UNIVERSE */
-#blue-universe {
-  font-size: 100px;
-  font-weight: 500;
-  color: #4fb3ff; /* slightly lighter for visibility */
-
-  /* DARK BORDER SHADOW + Glow */
-  text-shadow:
-    2px 2px 4px rgba(0,0,0,0.85), /* Dark outline */
-    0 0 10px rgba(79,179,255,0.6),
-    0 0 25px rgba(79,179,255,0.4),
-    0 0 40px rgba(79,179,255,0.2);
-  position: relative;
-}
-
-/* J&V’s — SAME COLOR AS BLUE UNIVERSE, DARK BORDER FOR VISIBILITY */
+/* J&V’s — now on the previous Blue Universe layer */
 #jv {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   font-size: 200px;
   font-weight: 900;
   letter-spacing: -5px;
-
-  /* SAME COLOR & GRADIENT AS BLUE UNIVERSE */
-  background: linear-gradient(
-    135deg,
-    #4fb3ff,
-    #4fb3ff 50%,
-    #4fb3ff
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  /* DARK BORDER SHADOW + Glow */
+  color: #4fb3ff; /* same as Blue Universe */
   text-shadow:
-    2px 2px 4px rgba(0,0,0,0.85), /* Dark outline */
+    2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(79,179,255,0.6),
     0 0 25px rgba(79,179,255,0.4),
     0 0 40px rgba(79,179,255,0.2);
-
   animation: pulseGlow 3s ease-in-out infinite;
+  position: relative;
+  display: inline-block;
+}
+
+/* BLUE UNIVERSE — now on the previous J&V’s layer */
+#blue-universe {
+  font-size: 100px;
+  font-weight: 500;
+  color: #4fb3ff;
+  text-shadow:
+    2px 2px 4px rgba(0,0,0,0.85),
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.4),
+    0 0 40px rgba(79,179,255,0.2);
+  position: absolute; /* position like J&V was */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 /* PULSE */
@@ -105,10 +93,10 @@ canvas {
 <canvas id="space"></canvas>
 
 <div id="logo-wrapper">
-  <div id="blue-universe">
-    Blue Universe
-    <div id="jv">J&amp;V’s</div>
-  </div>
+  <!-- J&V’s is now in the top-level container -->
+  <div id="jv">J&amp;V’s</div>
+  <!-- Blue Universe is now positioned like J&V’s was -->
+  <div id="blue-universe">Blue Universe</div>
 </div>
 
 <script>
