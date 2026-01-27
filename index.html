@@ -13,7 +13,6 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: 'Segoe UI', sans-serif;
-  perspective: 1000px; /* Enable 3D perspective for the logo */
 }
 
 /* STAR CANVAS */
@@ -27,7 +26,7 @@ canvas {
 /* LOGO CONTAINER */
 #logo-wrapper {
   position: absolute;
-  top: 80px;
+  top: 80px; /* Locked */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -52,23 +51,21 @@ canvas {
   display: inline-block;
 }
 
-/* BLUE UNIVERSE container letters as spans for individual control */
+/* BLUE UNIVERSE — stays bright cosmic blue */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
-  position: relative;
-  display: inline-block;
   color: #4fb3ff;
-}
-
-#blue-universe span {
-  display: inline-block;
-  transition: transform 0.5s ease;
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(79,179,255,0.6),
     0 0 25px rgba(79,179,255,0.4),
     0 0 40px rgba(79,179,255,0.2);
+  position: absolute; /* centered on logo wrapper */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 /* PULSE */
@@ -97,12 +94,7 @@ canvas {
 
 <div id="logo-wrapper">
   <div id="jv">J&amp;V’s</div>
-  <div id="blue-universe">
-    <!-- Split Blue Universe into spans for individual letter control -->
-    <span>B</span><span>l</span><span>u</span><span>e</span>
-    <span> </span>
-    <span>U</span><span>n</span><span>i</span><span>v</span><span>e</span><span>r</span><span>s</span><span>e</span>
-  </div>
+  <div id="blue-universe">Blue Universe</div>
 </div>
 
 <script>
@@ -176,19 +168,6 @@ function draw() {
 }
 
 draw();
-
-/* 3D radial effect for Blue Universe */
-const blueLetters = document.querySelectorAll("#blue-universe span");
-const centerIndex = Math.floor(blueLetters.length / 2);
-
-blueLetters.forEach((letter, i) => {
-  const distanceFromCenter = Math.abs(i - centerIndex);
-  const maxZ = 60; // how far forward the center pops
-  const angle = distanceFromCenter / centerIndex * 15; // max rotation in degrees
-  const scale = 1 + (distanceFromCenter === 0 ? 0.3 : 0); // center letter pops forward
-
-  letter.style.transform = `translateZ(${distanceFromCenter === 0 ? maxZ : 0}px) rotateY(${i < centerIndex ? -angle : angle}deg)`;
-});
 </script>
 
 </body>
