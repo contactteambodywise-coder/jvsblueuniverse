@@ -14,7 +14,7 @@ body {
 /* CONTAINER — MOVED UP MORE */
 .universe-container {
   position: absolute;
-  top: -2%;              /* higher than before */
+  top: -5%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -22,27 +22,28 @@ body {
   z-index: 5;
 }
 
-/* J&V’s — TIGHTER SPACING */
+/* J&V’s — SMALLER + LOWER */
 .foundation-text {
-  font-size: 11vw;
-  letter-spacing: 0.035em;   /* closer together */
-  color: rgba(220, 230, 255, 0.65);
+  font-size: 8vw;
+  margin-top: 3vw;
+  letter-spacing: 0.04em;
+  color: rgba(220, 230, 255, 0.6);
   text-align: center;
   text-shadow:
-    0 0 30px rgba(180,200,255,0.65),
-    2px 2px 10px #000;
-  animation: foundationPulse 4s ease-in-out infinite;
+    0 0 25px rgba(180,200,255,0.6),
+    2px 2px 8px #000;
+  animation: foundationPulse 4.5s ease-in-out infinite;
 }
 
-/* BLUE UNIVERSE — CLEARLY HIGHER */
+/* BLUE UNIVERSE — HIGHER */
 .main-text {
   font-size: 5vw;
-  margin-top: -2.4vw;     /* pulls it upward more */
+  margin-top: -6vw;
   color: #00cfff;
   text-align: center;
   text-shadow:
-    0 0 10px #00cfff,
-    0 0 30px #009dff,
+    0 0 12px #00cfff,
+    0 0 35px #009dff,
     2px 2px 0 #2b2b2b,
     4px 4px 0 #1a1a1a;
   animation: float 4s ease-in-out infinite;
@@ -55,13 +56,13 @@ body {
   z-index: 1;
 }
 
-/* FLOAT — STILL NOTICEABLE */
+/* FLOAT */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-32px) scale(1.04);
+    transform: translateY(-36px);
   }
 }
 
@@ -69,23 +70,23 @@ body {
 @keyframes foundationPulse {
   0%, 100% {
     transform: scale(1);
-    opacity: 0.65;
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.06);
-    opacity: 0.9;
+    transform: scale(1.05);
+    opacity: 0.85;
   }
 }
 
 /* MOBILE */
 @media (max-width: 768px) {
   .foundation-text {
-    font-size: 18vw;
-    letter-spacing: 0.03em;
+    font-size: 14vw;
+    margin-top: 6vw;
   }
 
   .main-text {
     font-size: 9vw;
-    margin-top: -4vw;
+    margin-top: -10vw;
   }
 }
