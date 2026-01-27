@@ -126,7 +126,7 @@ function spawnShootingStar() {
   // Determine trail width: 95% normal, 5% longer streaks
   let lineWidth = Math.random() < 0.05 ? Math.random()*0.5 + 2.5 : 1.2;
 
-  shootingStars.push({ x, y, vx, vy, life:0, max:80, lineWidth });
+  shootingStars.push({ x, y, vx, vy, lineWidth });
 }
 
 /* Rare spawn */
@@ -156,8 +156,11 @@ function draw() {
 
     s.x += s.vx;
     s.y += s.vy;
-    s.life++;
-    if(s.life>s.max) shootingStars.splice(i,1);
+
+    // Remove only if offscreen
+    if(s.x < -150 || s.x > w+150 || s.y < -150 || s.y > h+150){
+      shootingStars.splice(i,1);
+    }
   });
 
   requestAnimationFrame(draw);
