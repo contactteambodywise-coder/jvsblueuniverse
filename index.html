@@ -26,7 +26,7 @@ canvas {
 /* LOGO CONTAINER */
 #logo-wrapper {
   position: absolute;
-  top: 40px; /* moved up 20px from 60px */
+  top: 40px; /* locked for container */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -49,6 +49,7 @@ canvas {
   position: relative;
   display: inline-block;
   z-index: 10;
+  top: -20px; /* moved J&V’s up 20px */
 }
 
 /* Wrap each letter in a span for animation */
@@ -68,7 +69,7 @@ canvas {
     0 0 25px rgba(79,179,255,0.4),
     0 0 40px rgba(79,179,255,0.2);
   position: absolute;
-  top: calc(50% - 40px); /* moved up 20px relative to previous 20px shift */
+  top: calc(50% - 40px); /* locked */
   left: 50%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
