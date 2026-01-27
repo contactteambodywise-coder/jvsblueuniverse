@@ -98,18 +98,28 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+/* PARALLAX OFFSETS */
+let parallaxX = 0;
+let parallaxY = 0;
+
+// Listen for device tilt
+window.addEventListener("deviceorientation", (e) => {
+  parallaxX = e.gamma / 45; // -1 to 1
+  parallaxY = e.beta / 45;  // -1 to 1
+});
+
 /* BACKGROUND STARS WITH DEPTH */
 const stars = Array.from({ length: 360 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
-  z: Math.random() * 0.8 + 0.2, // depth 0.2 → 1
+  z: Math.random() * 0.8 + 0.2, // depth
   a: Math.random()
 }));
 
 /* SHOOTING STARS WITH DEPTH */
 let shootingStars = [];
 function spawnShootingStar() {
-  let z = Math.random() * 0.8 + 0.2; // depth
+  let z = Math.random() * 0.8 + 0.2;
   let x = Math.random() * w;
   let y = Math.random() * h;
   let vx = (Math.random() * 12 - 6) * z;
@@ -127,7 +137,7 @@ setInterval(() => { if (Math.random() < 0.35) spawnShootingStar(); }, 4000);
 /* ALIEN SHIPS WITH DEPTH */
 let alienShips = [];
 function spawnAlienShip() {
-  let z = Math.random() * 0.7 + 0.3; // depth
+  let z = Math.random() * 0.7 + 0.3;
   let x = Math.random() * w;
   let y = Math.random() * h;
   let vx = (Math.random() * 12 - 6) * z;
@@ -150,9 +160,11 @@ function draw() {
 
   // Stars
   stars.forEach(s => {
-    ctx.globalAlpha = s.a * s.z; // farther stars dimmer
+    let offsetX = parallaxX * s.z * 10;
+    let offsetY = parallaxY * s.z * 10;
+    ctx.globalAlpha = s.a * s.z;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI*2); // smaller if farther
+    ctx.arc(s.x + offsetX, s.y + offsetY, s.r * s.z, 0, Math.PI*2);
     ctx.fillStyle = "white";
     ctx.fill();
   });
@@ -182,7 +194,7 @@ function draw() {
     a.y += a.vy + Math.cos(now * 0.001) * a.curveFactor * 10 * a.z;
 
     let alpha = 0.4 + 0.6 * Math.abs(Math.sin(a.pulsePhase + now * a.pulseSpeed));
-    alpha *= a.z; // dim if farther
+    alpha *= a.z;
 
     // Random glow
     if(Math.random() < 0.05){
