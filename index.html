@@ -113,23 +113,25 @@ const stars = Array.from({ length: 360 }, () => ({
 let shootingStars = [];
 
 function spawnShootingStar() {
-  const edge = Math.floor(Math.random() * 4);
-  let x, y, vx, vy;
+  // Spawn anywhere in viewport
+  let x = Math.random() * w;
+  let y = Math.random() * h;
 
-  switch (edge) {
-    case 0: x = -100; y = Math.random() * h; vx = Math.random()*8 + 4; vy = Math.random()*4 - 2; break;
-    case 1: x = Math.random()*w; y = -100; vx = Math.random()*4 - 2; vy = Math.random()*8 + 2; break;
-    case 2: x = w+100; y = Math.random()*h; vx = -(Math.random()*8 + 4); vy = Math.random()*4 - 2; break;
-    case 3: x = Math.random()*w; y = h+100; vx = Math.random()*4 - 2; vy = -(Math.random()*8 + 2); break;
-  }
+  // Random speed and direction (-6 → 6)
+  let vx = Math.random() * 12 - 6;
+  let vy = Math.random() * 12 - 6;
 
-  // Determine trail width: 95% normal, 5% longer streaks
+  // Ensure it's moving reasonably (not completely still)
+  if(Math.abs(vx) < 2) vx = Math.sign(vx || 1) * 2;
+  if(Math.abs(vy) < 2) vy = Math.sign(vy || 1) * 2;
+
+  // Rare long streaks 5%
   let lineWidth = Math.random() < 0.05 ? Math.random()*0.5 + 2.5 : 1.2;
 
   shootingStars.push({ x, y, vx, vy, lineWidth });
 }
 
-/* Rare spawn */
+// Rare spawn every 4 seconds
 setInterval(() => { if (Math.random() < 0.35) spawnShootingStar(); }, 4000);
 
 function draw() {
