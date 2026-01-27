@@ -20,11 +20,12 @@ canvas {
   inset: 0;
 }
 
+/* ===== LOGO ===== */
 #logo-wrapper {
   position: absolute;
-  top: 50%;             /* vertical center */
-  left: 50%;            /* horizontal center */
-  transform: translate(-50%, -50%); /* centers wrapper */
+  top: calc(50% - 100px); /* move text block up 100px */
+  left: 50%;
+  transform: translateX(-50%);
   text-align: center;
   pointer-events: none;
   z-index: 10;
@@ -42,13 +43,14 @@ canvas {
 }
 
 #blue-universe {
-  font-size: 85px; /* scaled down for balance */
+  font-size: 85px; /* scaled for monitor */
   font-weight: 500;
   color: #4fb3ff;
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 12px rgba(79,179,255,0.6),
     0 0 28px rgba(79,179,255,0.35);
+  white-space: nowrap; /* keep on one line on all screens */
 }
 </style>
 </head>
