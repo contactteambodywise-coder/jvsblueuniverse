@@ -49,7 +49,7 @@ canvas {
   position: relative;
   display: inline-block;
   z-index: 10;
-  top: -40px; /* moved up additional 20px */
+  top: -40px; /* locked top for J&V’s */
 }
 
 /* Wrap each letter in a span for animation */
@@ -105,10 +105,10 @@ window.addEventListener("resize", resize);
 resize();
 
 /* BACKGROUND STARS */
-const stars = Array.from({ length: 300 }, () => ({
+const stars = Array.from({ length: 400 }, () => ({  // increased from 300 → 400
   x: Math.random() * w,
   y: Math.random() * h,
-  r: Math.random() * 1.4 + 0.3,
+  r: Math.random() * 3.8 + 0.2,  // changed from 0.3–1.7 → 0.2–4
   a: Math.random()
 }));
 
