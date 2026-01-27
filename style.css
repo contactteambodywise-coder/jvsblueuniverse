@@ -11,10 +11,10 @@ body {
   font-family: 'Arial Black', sans-serif;
 }
 
-/* TEXT CONTAINER */
+/* CONTAINER — MOVED UP MORE */
 .universe-container {
   position: absolute;
-  top: 2%;            /* NOTICEABLY higher */
+  top: -2%;              /* higher than before */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -22,11 +22,11 @@ body {
   z-index: 5;
 }
 
-/* J&V's — FOUNDATION */
+/* J&V’s — TIGHTER SPACING */
 .foundation-text {
   font-size: 11vw;
-  letter-spacing: 0.08em;
-  color: rgba(220, 230, 255, 0.6);
+  letter-spacing: 0.035em;   /* closer together */
+  color: rgba(220, 230, 255, 0.65);
   text-align: center;
   text-shadow:
     0 0 30px rgba(180,200,255,0.65),
@@ -34,10 +34,10 @@ body {
   animation: foundationPulse 4s ease-in-out infinite;
 }
 
-/* BLUE UNIVERSE — IDENTITY */
+/* BLUE UNIVERSE — CLEARLY HIGHER */
 .main-text {
   font-size: 5vw;
-  margin-top: -1.2vw;      /* pulls it upward */
+  margin-top: -2.4vw;     /* pulls it upward more */
   color: #00cfff;
   text-align: center;
   text-shadow:
@@ -55,24 +55,25 @@ body {
   z-index: 1;
 }
 
-/* ANIMATIONS — INCREASED BUT STILL ELEGANT */
+/* FLOAT — STILL NOTICEABLE */
 @keyframes float {
   0%, 100% {
     transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-28px) scale(1.035); /* NOTICEABLE */
+    transform: translateY(-32px) scale(1.04);
   }
 }
 
+/* FOUNDATION PULSE */
 @keyframes foundationPulse {
   0%, 100% {
     transform: scale(1);
-    opacity: 0.6;
+    opacity: 0.65;
   }
   50% {
     transform: scale(1.06);
-    opacity: 0.85;
+    opacity: 0.9;
   }
 }
 
@@ -80,11 +81,11 @@ body {
 @media (max-width: 768px) {
   .foundation-text {
     font-size: 18vw;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.03em;
   }
 
   .main-text {
     font-size: 9vw;
-    margin-top: -2.5vw;
+    margin-top: -4vw;
   }
 }
