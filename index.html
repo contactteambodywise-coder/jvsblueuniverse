@@ -40,7 +40,7 @@ canvas {
   font-size: 200px;
   font-weight: 900;
   letter-spacing: -5px;
-  color: rgba(0,51,102,0.4); /* start at 40% */
+  color: rgba(0,51,102,0.4);
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(0,51,102,0.6),
@@ -49,7 +49,7 @@ canvas {
   position: relative;
   display: inline-block;
   z-index: 10;
-  top: -40px; /* locked top for J&V’s */
+  top: -40px;
 }
 
 /* Wrap each letter in a span for animation */
@@ -69,7 +69,7 @@ canvas {
     0 0 25px rgba(79,179,255,0.4),
     0 0 40px rgba(79,179,255,0.2);
   position: absolute;
-  top: calc(50% - 40px); /* locked */
+  top: calc(50% - 40px);
   left: 50%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
@@ -105,10 +105,10 @@ window.addEventListener("resize", resize);
 resize();
 
 /* BACKGROUND STARS */
-const stars = Array.from({ length: 400 }, () => ({  // increased from 300 → 400
+const stars = Array.from({ length: 360 }, () => ({  // reduced from 400 → 360
   x: Math.random() * w,
   y: Math.random() * h,
-  r: Math.random() * 3.8 + 0.2,  // changed from 0.3–1.7 → 0.2–4
+  r: Math.random() * 2.3 + 0.2,  // changed size from 0.2 → 2.5px
   a: Math.random()
 }));
 
