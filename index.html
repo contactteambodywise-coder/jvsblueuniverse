@@ -101,8 +101,6 @@ resize();
 /* PARALLAX OFFSETS */
 let parallaxX = 0;
 let parallaxY = 0;
-
-// Listen for device tilt
 window.addEventListener("deviceorientation", (e) => {
   parallaxX = e.gamma / 45; // -1 to 1
   parallaxY = e.beta / 45;  // -1 to 1
@@ -112,8 +110,9 @@ window.addEventListener("deviceorientation", (e) => {
 const stars = Array.from({ length: 360 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
-  z: Math.random() * 0.8 + 0.2, // depth
-  a: Math.random()
+  z: Math.random() * 0.8 + 0.2, // depth 0.2 → 1
+  a: Math.random(),
+  r: Math.random() * 2 + 3 // radius 3 → 5
 }));
 
 /* SHOOTING STARS WITH DEPTH */
