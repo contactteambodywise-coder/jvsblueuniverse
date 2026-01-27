@@ -89,19 +89,21 @@ const stars = Array.from({ length: 360 }, () => ({
   r: Math.random() * 2 + 2
 }));
 
-/* ===== NEBULAE (2) WITH ORBITING STARS ===== */
+/* ===== NEBULAE (2) WITH DEPTH + ORBITING STARS ===== */
 const nebulae = Array.from({ length: 2 }, () => {
   const hue = 210 + Math.random()*60;
+  const z = Math.random() + 0.5; // depth scaling 0.5 (far) → 1.5 (close)
   return {
     x: Math.random() * w,
     y: Math.random() * h,
     r: Math.random()*500 + 400,
     dx: (Math.random() - 0.5) * 0.04,
     dy: (Math.random() - 0.5) * 0.04,
+    z,
     hue,
-    color: `hsla(${hue},70%,50%,0.07)`, // increased opacity
-    particles: Array.from({ length: Math.floor(Math.random()*80)+150 }, () => ({ // more points
-      x: Math.random()*4 + 1, // slightly bigger particles
+    color: `hsla(${hue},70%,50%,0.07)`,
+    particles: Array.from({ length: Math.floor(Math.random()*80)+150 }, () => ({
+      x: Math.random()*4 + 1,
       y: Math.random()*4 + 1
     })),
     stars: Array.from({ length: Math.floor(Math.random()*50)+50 }, () => ({
@@ -155,25 +157,25 @@ function draw() {
     n.x += n.dx;
     n.y += n.dy;
 
-    // cloud particles
+    // cloud particles with depth scaling
     n.particles.forEach(p=>{
-      const px = n.x + (Math.random()-0.5)*n.r;
-      const py = n.y + (Math.random()-0.5)*n.r;
-      ctx.globalAlpha = 0.07; // slightly more visible
+      const px = n.x + (p.x - n.x) * n.z + (Math.random()-0.5)*n.r*n.z;
+      const py = n.y + (p.y - n.y) * n.z + (Math.random()-0.5)*n.r*n.z;
+      ctx.globalAlpha = 0.07; // still subtle
       ctx.beginPath();
       ctx.arc(px, py, p.x, 0, Math.PI*2);
       ctx.fillStyle = n.color;
       ctx.fill();
     });
 
-    // nebula-bound stars orbiting center
+    // nebula-bound stars orbiting center with depth
     n.stars.forEach(s=>{
       s.angle += s.speed;
-      const sx = n.x + Math.cos(s.angle)*s.radius;
-      const sy = n.y + Math.sin(s.angle)*s.radius;
-      ctx.globalAlpha = s.alpha;
+      const sx = n.x + Math.cos(s.angle)*s.radius*n.z;
+      const sy = n.y + Math.sin(s.angle)*s.radius*n.z;
+      ctx.globalAlpha = s.alpha * n.z; // closer = brighter
       ctx.beginPath();
-      ctx.arc(sx, sy, s.size, 0, Math.PI*2);
+      ctx.arc(sx, sy, s.size*n.z, 0, Math.PI*2);
       ctx.fillStyle = `hsla(${n.hue},80%,85%,1)`;
       ctx.fill();
     });
