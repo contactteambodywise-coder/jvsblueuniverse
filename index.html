@@ -26,7 +26,7 @@ canvas {
   position: fixed;       /* independent layer */
   top: 50%;
   left: 50%;
-  transform: translate(-50%, calc(-50% - 200px)); /* moved up 100px from previous -100px */
+  transform: translate(-50%, calc(-50% - 100px)); /* original vertical position */
   text-align: center;
   pointer-events: none;
   z-index: 9999;         /* above all background effects */
@@ -41,6 +41,8 @@ canvas {
     2px 2px 4px rgba(0,0,0,0.9),
     0 0 12px rgba(79,179,255,0.7),
     0 0 30px rgba(79,179,255,0.4);
+  position: relative; /* independent movement */
+  top: -20px;         /* move up 20px */
 }
 
 #blue-universe {
