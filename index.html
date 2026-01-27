@@ -45,16 +45,9 @@ canvas {
     0 0 25px rgba(79,179,255,0.4),
     0 0 40px rgba(79,179,255,0.2);
   position: relative;
-  animation: floatPulse 6s infinite ease-in-out;
 }
 
-/* Blue Universe subtle pulse */
-@keyframes floatPulse {
-  0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.02); }
-}
-
-/* J&V’s solid foundation letters with shadow only */
+/* J&V’s perfectly centered INSIDE Blue Universe */
 #jv {
   position: absolute;
   top: 50%;
@@ -63,7 +56,9 @@ canvas {
   font-size: 200px; /* Locked size */
   font-weight: 900; /* Solid foundation */
   letter-spacing: -5px; /* Locked */
-  color: #aaa; /* Solid grey color for rock-like feel */
+  background: linear-gradient(135deg, #aaa, #888 30%, #bbb 60%, #999); /* Asteroid gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-shadow:
     2px 2px 2px rgba(0,0,0,0.7),
     0 0 5px rgba(255,255,255,0.2),
@@ -113,7 +108,7 @@ function spawnShootingStar() {
   switch (edge) {
     case 0: x = -100; y = Math.random() * h; vx = Math.random()*8+6; vy=Math.random()*4-2; break;
     case 1: x = Math.random()*w; y = -100; vx = Math.random()*4-2; vy = Math.random()*8+6; break;
-    case 2: x = w+100; y = Math.random() * h; vx = -(Math.random()*8+6); vy = Math.random()*4-2; break;
+    case 2: x = w+100; y = Math.random()*h; vx = -(Math.random()*8+6); vy = Math.random()*4-2; break;
     case 3: x = Math.random()*w; y = h+100; vx = Math.random()*4-2; vy = -(Math.random()*8+6); break;
   }
 
