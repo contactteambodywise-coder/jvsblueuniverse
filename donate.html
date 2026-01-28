@@ -13,11 +13,15 @@ html, body {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
 }
+
+/* Canvas background */
 canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
 }
+
+/* ===== LOGO CONTAINER ===== */
 #logo-wrapper {
   position: fixed;
   top: 0;
@@ -26,11 +30,16 @@ canvas {
   pointer-events: none;
   z-index: 9999;
 }
+
+/* ===== J&V’s TEXT ===== */
 #jv {
   font-size: 160px;
   font-weight: 900;
   color: rgba(79,179,255,1);
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),0 0 10px rgba(79,179,255,0.6),0 0 25px rgba(79,179,255,0.35);
+  text-shadow:
+    2px 2px 4px rgba(0,0,0,0.85),
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.35);
   position: absolute;
   top: 20px;
   left: 50%;
@@ -38,15 +47,21 @@ canvas {
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
 }
+
 @keyframes jv-breathe {
-  0%,100% { opacity: 0.2; transform: translateX(-50%) scale(1); }
+  0%, 100% { opacity: 0.2; transform: translateX(-50%) scale(1); }
   50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
 }
+
+/* ===== BLUE UNIVERSE TEXT ===== */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
   color: #70c2ff;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),0 0 12px rgba(79,179,255,0.65),0 0 28px rgba(79,179,255,0.4);
+  text-shadow:
+    2px 2px 4px rgba(0,0,0,0.85),
+    0 0 12px rgba(79,179,255,0.65),
+    0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
   position: absolute;
   top: 50px;
@@ -55,11 +70,14 @@ canvas {
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
 }
+
 @keyframes blue-breathe {
-  0% { opacity:0.85; transform:translateX(-50%) scale(1); }
-  50% { opacity:1; transform:translateX(-50%) scale(1.02); }
-  100% { opacity:0.85; transform:translateX(-50%) scale(1); }
+  0% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.02); }
+  100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
+
+/* ===== BUTTON CONTAINER ===== */
 #button-container {
   position: absolute;
   top: 510px;
@@ -69,6 +87,8 @@ canvas {
   pointer-events: auto;
   z-index: 10150;
 }
+
+/* ===== BUTTON STYLES ===== */
 .cosmic-btn {
   position: absolute;
   font-size: 20px;
@@ -88,17 +108,21 @@ canvas {
   word-wrap: break-word;
   pointer-events: auto;
 }
+
 .cosmic-btn:hover {
   background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff,0 0 40px rgba(79,179,255,0.7),0 0 60px rgba(79,179,255,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
   transform: scale(1.05);
 }
+
+/* ===== INDIVIDUAL BUTTON SIZES ===== */
 #shop { width: 120px; height: 120px; }
 #downloads { width: 140px; height: 140px; }
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
-#home { width: 120px; height: 120px; } /* New home button as circle */
+
+/* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
   width: 120px;
   height: 120px;
@@ -109,6 +133,7 @@ canvas {
   display: flex;
   flex-direction: column;
 }
+
 #donate div {
   flex: 1;
   width: 100%;
@@ -123,12 +148,16 @@ canvas {
   transition: all 0.3s ease-in-out;
   background: rgba(0,0,0,0.25);
 }
+
 #donate div:hover {
   background: rgba(0,0,0,0.5);
   box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
 }
+
 #donate .pause-half { border-bottom: none; }
 #donate .donate-half { border-top: none; }
+
+/* ===== PAGE CONTENT ===== */
 #page-content {
   position: absolute;
   top: 300px;
@@ -159,7 +188,7 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
+    
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
@@ -204,14 +233,38 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON DATA ===== */
+/* ===== BUTTON EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{
+    let target = btn.getAttribute('data-link');
+    if(btn.classList.contains('main-page')) target='index.html';
+    window.location.href=target;
+  });
+});
+
+// ===== DONATE BUTTON PAYPAL LINK =====
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{
+  window.open("https://www.paypal.me/JohnBender612", "_blank");
+});
+
+let paused = false;
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+  buttonData.forEach((data,i)=>{
+    const btn=document.getElementById(data.id);
+    if(paused) btn.dataset.angle = (360/buttonData.length)*i;
+  });
+});
+
+/* ===== PLANETS ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
-  {id:'home', distance:200, speed:0.16, stretchX:1.1, stretchY:0.9} // Home orbiting like others
+  {id:'home', distance:160, speed:0.2, stretchX:1, stretchY:1} // home button orbit
 ];
 
 buttonData.forEach(data=>{
@@ -224,54 +277,28 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
-/* ===== ANIMATE BUTTONS ===== */
-let paused = false;
+// Animate buttons
 function animateButtons(){
-  buttonData.forEach((data,i)=>{
+  buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused){
-      // Arrange evenly around donate
-      const total = buttonData.length;
-      const angle = (360/total)*i;
-      const rad = angle*Math.PI/180;
-      const distance = parseFloat(data.distance);
-      const stretchX = parseFloat(data.stretchX);
-      const stretchY = parseFloat(data.stretchY);
-      const x = Math.cos(rad)*distance*stretchX;
-      const y = Math.sin(rad)*distance*stretchY;
-      btn.style.transform=`translate(${x}px, ${y}px)`;
-    } else {
-      let angle=parseFloat(btn.dataset.angle);
-      const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-      angle+=speed;
-      if(angle>360) angle-=360;
-      btn.dataset.angle=angle;
-      const rad=angle*Math.PI/180;
-      const distance=parseFloat(btn.dataset.distance);
-      const stretchX=parseFloat(btn.dataset.stretchX);
-      const stretchY=parseFloat(btn.dataset.stretchY);
-      const x=Math.cos(rad)*distance*stretchX;
-      const y=Math.sin(rad)*distance*stretchY;
-      btn.style.transform=`translate(${x}px, ${y}px)`;
-    }
+    if(paused) return;
+    let angle=parseFloat(btn.dataset.angle);
+    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
+    angle+=speed;
+    if(angle>360) angle-=360;
+    btn.dataset.angle=angle;
+    const rad=angle*Math.PI/180;
+    const distance=parseFloat(btn.dataset.distance);
+    const stretchX=parseFloat(btn.dataset.stretchX);
+    const stretchY=parseFloat(btn.dataset.stretchY);
+    const x=Math.cos(rad)*distance*stretchX;
+    const y=Math.sin(rad)*distance*stretchY;
+    btn.style.transform=`translate(${x}px, ${y}px)`;
   });
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
-
-/* ===== BUTTON EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{
-    window.location.href=btn.getAttribute('data-link');
-  });
-});
-
-const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
-  paused = !paused;
-});
-
 </script>
+
 </body>
 </html>
