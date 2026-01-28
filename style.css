@@ -1,32 +1,80 @@
-/* ===== RECTANGULAR BUTTONS ===== */
-.rect-btn {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* CANVAS */
+#space {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+/* LOGO */
+#logo-wrapper {
   position: absolute;
-  font-size: 20px;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+}
+
+#jv {
+  font-size: 160px;
+  font-weight: 900;
+  color: #4fb3ff;
+  text-shadow: 0 0 25px rgba(79,179,255,0.6);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,100% { opacity: .3; }
+  50% { opacity: 1; }
+}
+
+#blue-universe {
+  font-size: 96px;
+  color: #70c2ff;
+  text-shadow: 0 0 20px rgba(79,179,255,0.6);
+}
+
+/* BUTTONS */
+#button-container {
+  margin-top: 80px;
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cosmic-btn {
+  padding: 14px 26px;
+  font-size: 18px;
   font-weight: bold;
   color: #70c2ff;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.3);
   border: 2px solid #70c2ff;
-  border-radius: 12px;
-  padding: 12px 24px;
-  text-align: center;
+  border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
-  transition: all 0.3s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  box-shadow: 0 0 12px rgba(79,179,255,0.5);
+  transition: all .3s ease;
 }
 
-.rect-btn:hover {
+.cosmic-btn:hover {
   background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
-  transform: scale(1.05);
+  box-shadow: 0 0 22px rgba(79,179,255,0.9);
 }
 
-/* Optional: size tweaks if you want different widths */
-#home { width: 140px; height: 60px; }
-#shop { width: 160px; height: 60px; }
-#downloads { width: 180px; height: 60px; }
-#affiliate { width: 200px; height: 60px; }
-#membership { width: 180px; height: 60px; }
-#about { width: 160px; height: 60px; }
+.donate-btn {
+  padding: 14px 36px;
+}
