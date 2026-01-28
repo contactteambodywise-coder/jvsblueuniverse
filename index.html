@@ -45,6 +45,9 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
+
+  /* ✅ Fix for clickable buttons behind text */
+  pointer-events: none;
 }
 
 @keyframes jv-breathe {
@@ -68,6 +71,9 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
+
+  /* ✅ Fix for clickable buttons behind text */
+  pointer-events: none;
 }
 
 @keyframes blue-breathe {
@@ -153,9 +159,12 @@ canvas {
 }
 
 /* Optional: separate border between halves */
-#donate .pause-half { border-bottom: none; }
-#donate .donate-half { border-top: none; }
-
+#donate .pause-half {
+  border-bottom: none;
+}
+#donate .donate-half {
+  border-top: none;
+}
 </style>
 </head>
 
