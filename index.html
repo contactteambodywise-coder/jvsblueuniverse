@@ -139,19 +139,26 @@ canvas {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  font-weight: bold;
+  color: #70c2ff;
+  border: 2px solid #70c2ff;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+  background: rgba(0,0,0,0.25);
 }
 
+#donate div:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+}
+
+/* Optional: separate border between halves */
 #donate .pause-half {
-  background: rgba(79,179,255,0.6);
-  border-bottom: 1px solid rgba(0,0,0,0.3);
+  border-bottom: none;
 }
-
 #donate .donate-half {
-  background: rgba(79,179,255,0.3);
+  border-top: none;
 }
-
-#donate .pause-half:hover { background: rgba(79,179,255,0.8); }
-#donate .donate-half:hover { background: rgba(79,179,255,0.5); }
 
 </style>
 </head>
