@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>J&V’s Blue Universe</title>
-
 <style>
 html, body {
   margin: 0;
@@ -23,12 +22,12 @@ canvas {
 
 /* ===== LOGO CONTAINER ===== */
 #logo-wrapper {
-  position: fixed;       /* independent layer */
-  top: 50%;
+  position: fixed;
+  top: 0;                 /* vertical transform removed */
   left: 50%;
-  transform: translate(-50%, -50%); /* exact center */
+  transform: translateX(-50%); /* horizontal only */
   pointer-events: none;
-  z-index: 9999;         /* above everything else */
+  z-index: 9999;
 }
 
 /* ===== J&V’s TEXT ===== */
@@ -41,8 +40,8 @@ canvas {
     0 0 12px rgba(79,179,255,0.7),
     0 0 30px rgba(79,179,255,0.4);
 
-  position: absolute;    
-  top: 220px;           /* +200px from previous 20px to move up visually */
+  position: absolute;
+  top: 200px;          /* starting position, adjust as needed */
   left: 50%;
   transform: translateX(-50%);
 }
@@ -59,7 +58,7 @@ canvas {
   white-space: nowrap;
 
   position: absolute;
-  top: 50px;            /* adjust distance below J&V’s as needed */
+  top: calc(200px + 160px + 20px); /* J&V’s top + height + spacing */
   left: 50%;
   transform: translateX(-50%);
 }
