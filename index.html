@@ -39,20 +39,17 @@ canvas {
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(79,179,255,0.6),
     0 0 25px rgba(79,179,255,0.35);
-
   position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10100;
-
-  /* ===== FULL SURFACE PULSE (opacity + glow + scale) ===== */
   animation: jv-breathe 3s ease-in-out infinite;
 }
 
 @keyframes jv-breathe {
   0%, 100% {
-    opacity: 0.2; /* almost transparent */
+    opacity: 0.2;
     transform: translateX(-50%) scale(1);
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
@@ -60,8 +57,8 @@ canvas {
       0 0 25px rgba(79,179,255,0.35);
   }
   50% {
-    opacity: 1; /* fully visible */
-    transform: translateX(-50%) scale(1.03); /* subtle forward pulse */
+    opacity: 1;
+    transform: translateX(-50%) scale(1.03);
     text-shadow:
       2.5px 2.5px 5px rgba(0,0,0,0.9),
       0 0 15px rgba(79,179,255,0.7),
@@ -69,7 +66,7 @@ canvas {
   }
 }
 
-/* ===== BLUE UNIVERSE TEXT (unchanged) ===== */
+/* ===== BLUE UNIVERSE TEXT ===== */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
@@ -79,41 +76,51 @@ canvas {
     0 0 12px rgba(79,179,255,0.65),
     0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
-
   position: absolute;
   top: 50px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9000;
-
   animation: blue-breathe 3s ease-in-out infinite alternate;
 }
 
 @keyframes blue-breathe {
-  0% {
-    opacity: 0.85;
-    text-shadow:
-      2px 2px 4px rgba(0,0,0,0.85),
-      0 0 12px rgba(79,179,255,0.65),
-      0 0 28px rgba(79,179,255,0.4);
-    transform: translateX(-50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    text-shadow:
-      3px 3px 5px rgba(0,0,0,0.9),
-      0 0 18px rgba(79,179,255,0.85),
-      0 0 38px rgba(79,179,255,0.5);
-    transform: translateX(-50%) scale(1.02);
-  }
-  100% {
-    opacity: 0.85;
-    text-shadow:
-      2px 2px 4px rgba(0,0,0,0.85),
-      0 0 12px rgba(79,179,255,0.65),
-      0 0 28px rgba(79,179,255,0.4);
-    transform: translateX(-50%) scale(1);
-  }
+  0% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.02); }
+  100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+}
+
+/* ===== BUTTON CONTAINER ===== */
+#button-container {
+  position: absolute;
+  top: 350px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 10150;
+  pointer-events: auto;
+}
+
+.cosmic-btn {
+  padding: 15px 50px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #70c2ff;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid #70c2ff;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.cosmic-btn:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+  transform: scale(1.05);
 }
 </style>
 </head>
@@ -125,6 +132,14 @@ canvas {
 <div id="logo-wrapper">
   <div id="jv">J&V’s</div>
   <div id="blue-universe">Blue Universe</div>
+
+  <div id="button-container">
+    <div class="cosmic-btn" data-link="shop.html">Shop</div>
+    <div class="cosmic-btn" data-link="downloads.html">Downloads</div>
+    <div class="cosmic-btn" data-link="affiliate.html">Affiliate Links</div>
+    <div class="cosmic-btn" data-link="membership.html">Membership</div>
+    <div class="cosmic-btn" data-link="about.html">About Us</div>
+  </div>
 </div>
 
 <script>
@@ -139,14 +154,12 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* ===== PARALLAX (MOBILE SAFE) ===== */
 let px = 0, py = 0;
 window.addEventListener("deviceorientation", e => {
-  px = (e.gamma || 0) / 45;
-  py = (e.beta || 0) / 45;
+  px = (e.gamma || 0)/45;
+  py = (e.beta || 0)/45;
 });
 
-/* ===== BACKGROUND STARS ===== */
 const stars = Array.from({ length: 360 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -155,7 +168,6 @@ const stars = Array.from({ length: 360 }, () => ({
   r: Math.random() * 2 + 2
 }));
 
-/* ===== NEBULAE (2) WITH DEPTH + ORBITING STARS + GLOW ===== */
 const nebulae = Array.from({ length: 2 }, () => {
   const hue = 210 + Math.random()*60;
   const z = Math.random() + 0.5;
@@ -182,13 +194,10 @@ const nebulae = Array.from({ length: 2 }, () => {
   };
 });
 
-/* ===== SHOOTING STARS ===== */
 let shootingStars = [];
-
 function spawnShootingStar() {
   const z = Math.random()*0.8+0.2;
   const fireball = Math.random()<0.01;
-
   shootingStars.push({
     x: Math.random()*w,
     y: Math.random()*h,
@@ -196,33 +205,18 @@ function spawnShootingStar() {
     vy: (Math.random()*10-5)*z,
     z,
     fireball,
-    width: fireball
-      ? Math.random()*2+4
-      : Math.random()<0.05
-        ? Math.random()*0.5+2.5
-        : Math.random()*1.2+1.4,
-    color: fireball
-      ? "255,180,80"
-      : Math.random()<0.3
-        ? "255,220,180"
-        : Math.random()<0.1
-          ? "200,220,255"
-          : "255,255,255"
+    width: fireball ? Math.random()*2+4 : Math.random()*1.2+1.4,
+    color: fireball ? "255,180,80" : "255,255,255"
   });
 }
-
 setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); }, 4000);
 
-/* ===== DRAW LOOP ===== */
 function draw() {
   ctx.clearRect(0,0,w,h);
 
-  /* --- NEBULAE --- */
   ctx.globalCompositeOperation = "screen";
   nebulae.forEach(n=>{
-    n.x += n.dx;
-    n.y += n.dy;
-
+    n.x += n.dx; n.y += n.dy;
     const glowRadius = n.r * n.z * 1.2;
     const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowRadius);
     grad.addColorStop(0, `hsla(${n.hue},70%,70%,0.03)`);
@@ -256,29 +250,18 @@ function draw() {
   ctx.globalCompositeOperation = "source-over";
   ctx.globalAlpha = 1;
 
-  /* --- BACKGROUND STARS --- */
   stars.forEach(s=>{
     ctx.globalAlpha = s.a * s.z;
     ctx.beginPath();
-    ctx.arc(
-      s.x + px * s.z * 10,
-      s.y + py * s.z * 10,
-      s.r * s.z,
-      0, Math.PI*2
-    );
+    ctx.arc(s.x + px * s.z * 10, s.y + py * s.z * 10, s.r * s.z, 0, Math.PI*2);
     ctx.fillStyle = "white";
     ctx.fill();
   });
   ctx.globalAlpha = 1;
 
-  /* --- SHOOTING STARS --- */
   shootingStars.forEach((s,i)=>{
     const tail = (s.fireball?40:20)*s.z;
-    const grad = ctx.createLinearGradient(
-      s.x,s.y,
-      s.x - s.vx*tail,
-      s.y - s.vy*tail
-    );
+    const grad = ctx.createLinearGradient(s.x,s.y,s.x - s.vx*tail,s.y - s.vy*tail);
     grad.addColorStop(0, `rgba(${s.color},${0.9*s.z})`);
     grad.addColorStop(0.3, `rgba(${s.color},${0.5*s.z})`);
     grad.addColorStop(1, `rgba(${s.color},0)`);
@@ -289,14 +272,21 @@ function draw() {
     ctx.moveTo(s.x,s.y);
     ctx.lineTo(s.x - s.vx*tail, s.y - s.vy*tail);
     ctx.stroke();
-    s.x += s.vx;
-    s.y += s.vy;
+    s.x += s.vx; s.y += s.vy;
     if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1);
   });
 
   requestAnimationFrame(draw);
 }
 draw();
+
+/* ===== BUTTON CLICK EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const link = btn.getAttribute('data-link');
+    window.location.href = link; 
+  });
+});
 </script>
 
 </body>
