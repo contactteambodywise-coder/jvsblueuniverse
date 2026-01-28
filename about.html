@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>About Us – J&V’s Blue Universe</title>
+<title>J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -156,23 +156,6 @@ canvas {
 
 #donate .pause-half { border-bottom: none; }
 #donate .donate-half { border-top: none; }
-
-/* ===== ABOUT US TEXT ===== */
-#about-text {
-  position: absolute;
-  top: 315px; /* moved down 15px */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  max-width: 900px;
-  text-align: center;
-  font-size: 28px;
-  line-height: 1.6;
-  color: #70c2ff;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
-  z-index: 10000;
-  pointer-events: none; /* allow clicks through text */
-}
 </style>
 </head>
 <body>
@@ -188,19 +171,13 @@ canvas {
     <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" id="about" data-link="index.html">Home</div>
+    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
     
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
     </div>
   </div>
-</div>
-
-<div id="about-text">
-  <p>Welcome to J&V’s Blue Universe! We are passionate creators exploring the cosmos of imagination, creativity, and technology. Our mission is to bring you unique digital experiences and tools while keeping the universe fun, magical, and engaging.</p>
-  <p>From exclusive downloads and affiliate insights to membership opportunities, we are dedicated to providing a vibrant space for everyone who loves to explore, create, and connect.</p>
-  <p>Thank you for visiting and being part of our Blue Universe. Together, we journey through stars, planets, and a little bit of cosmic magic.</p>
 </div>
 
 <script>
@@ -275,8 +252,6 @@ buttonData.forEach(data=>{
 });
 
 function animateButtons(){
-  const centerX=0;
-  const centerY=0;
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
     if(paused) return; // stop rotation
