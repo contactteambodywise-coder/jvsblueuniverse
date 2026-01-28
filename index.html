@@ -41,9 +41,10 @@ canvas {
     0 0 30px rgba(79,179,255,0.4);
 
   position: absolute;
-  top: 20px;          /* Center 100px from top: 100 - 80 */
+  top: 20px;          
   left: 50%;
   transform: translateX(-50%);
+  z-index: 10000;  /* in front */
 }
 
 /* ===== BLUE UNIVERSE TEXT ===== */
@@ -58,9 +59,10 @@ canvas {
   white-space: nowrap;
 
   position: absolute;
-  top: 50px; /* Center 100px from top: 100 - 50 */
+  top: 50px; 
   left: 50%;
   transform: translateX(-50%);
+  z-index: 9000;   /* behind J&V */
 }
 </style>
 </head>
