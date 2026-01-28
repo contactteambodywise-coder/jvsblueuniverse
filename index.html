@@ -134,12 +134,12 @@ canvas {
 }
 
 /* ===== BUTTONS ORBIT PROPERTIES ===== */
-/* Distances and speeds are fixed, spawn angles random */
-#shop { --distance: 220px; animation: orbit 20s linear infinite; transform-origin: 50% 50%; }
-#downloads { --distance: 260px; animation: orbit 25s linear infinite; transform-origin: 50% 50%; }
-#affiliate { --distance: 300px; animation: orbit 30s linear infinite; transform-origin: 50% 50%; }
-#membership { --distance: 180px; animation: orbit 22s linear infinite; transform-origin: 50% 50%; }
-#about { --distance: 240px; animation: orbit 28s linear infinite; transform-origin: 50% 50%; }
+/* Distances and speeds set for non-overlapping natural orbits */
+#shop { --distance: 180px; animation: orbit 18s linear infinite; transform-origin: 50% 50%; }
+#downloads { --distance: 220px; animation: orbit 22s linear infinite; transform-origin: 50% 50%; }
+#affiliate { --distance: 260px; animation: orbit 26s linear infinite; transform-origin: 50% 50%; }
+#membership { --distance: 300px; animation: orbit 30s linear infinite; transform-origin: 50% 50%; }
+#about { --distance: 340px; animation: orbit 34s linear infinite; transform-origin: 50% 50%; }
 #donate { top: 0; left: 0; transform: translate(0,0); }
 
 </style>
@@ -310,12 +310,20 @@ document.querySelectorAll('.cosmic-btn').forEach(btn => {
   });
 });
 
-/* ===== RANDOM SPAWN ANGLES ===== */
-const buttons = ['shop','downloads','affiliate','membership','about'];
-buttons.forEach(id => {
-  const btn = document.getElementById(id);
-  const angle = Math.random() * 360; // random angle
+/* ===== RANDOM SPAWN ANGLES WITH NO OVERLAP ===== */
+const buttonData = [
+  {id:'shop', distance:180},
+  {id:'downloads', distance:220},
+  {id:'affiliate', distance:260},
+  {id:'membership', distance:300},
+  {id:'about', distance:340}
+];
+
+buttonData.forEach(data => {
+  const btn = document.getElementById(data.id);
+  const angle = Math.random() * 360; // random spawn
   btn.style.setProperty('--start-angle', angle + 'deg');
+  btn.style.setProperty('--distance', data.distance + 'px');
 });
 </script>
 
