@@ -76,6 +76,73 @@ canvas {
   50% { opacity: 1; transform: translateX(-50%) scale(1.02); }
   100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
+
+/* ===== BUTTON CONTAINER ===== */
+#button-container {
+  position: absolute;
+  top: 400px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  z-index: 10150;
+  display: flex;
+  gap: 30px; /* spacing between buttons */
+}
+
+/* ===== BUTTON STYLES ===== */
+.cosmic-btn {
+  font-size: 20px;
+  font-weight: bold;
+  color: #70c2ff;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid #70c2ff;
+  border-radius: 15px; /* slightly rounded corners */
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 30px;
+}
+
+.cosmic-btn:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+  transform: scale(1.05);
+}
+
+/* ===== DONATE BUTTON ===== */
+#donate {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px; /* match rectangular style */
+  overflow: hidden;
+}
+
+#donate div {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #70c2ff;
+  border: 2px solid #70c2ff;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+  background: rgba(0,0,0,0.25);
+}
+
+#donate div:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+}
+
+#donate .pause-half { border-bottom: none; }
+#donate .donate-half { border-top: none; }
 </style>
 </head>
 <body>
@@ -85,6 +152,19 @@ canvas {
 <div id="logo-wrapper">
   <div id="jv">J&V’s</div>
   <div id="blue-universe">Blue Universe</div>
+
+  <div id="button-container">
+    <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
+    <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
+    <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
+    <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
+    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
+    
+    <div class="cosmic-btn" id="donate">
+      <div class="pause-half">⏸</div>
+      <div class="donate-half">Donate</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -119,6 +199,18 @@ function draw(){
   requestAnimationFrame(draw);
 }
 draw();
+
+/* ===== BUTTON EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+});
+
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
+let paused = false;
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+});
 </script>
 
 </body>
