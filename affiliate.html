@@ -126,7 +126,7 @@ canvas { position: fixed; inset: 0; z-index: 1; }
   <div id="blue-universe">Blue Universe</div>
 </div>
 
-<!-- Orbiting buttons (non-clickable, decorative) -->
+<!-- Orbiting buttons (decorative) -->
 <div class="orbit-btn" id="home-btn">Home</div>
 <div class="orbit-btn" id="shop-btn">Shop</div>
 <div class="orbit-btn" id="donate-btn">Donate</div>
@@ -161,21 +161,48 @@ drawStars();
 
 // ===== ORBITING BUTTONS =====
 const orbitData = [
-  {id:'home-btn', distance:200, angle:0, speed:0.2},
-  {id:'shop-btn', distance:260, angle:120, speed:0.15},
-  {id:'donate-btn', distance:320, angle:240, speed:0.1},
+  {id:'home-btn', baseDistance:200, angle:0, speed:0.2, size:1},
+  {id:'shop-btn', baseDistance:260, angle:120, speed:0.15, size:1},
+  {id:'donate-btn', baseDistance:320, angle:240, speed:0.1, size:1},
 ];
 const centerX = w/2, centerY = h/2;
 
+// ===== AUDIO =====
+const audio = new Audio('voice.mp3');
+audio.crossOrigin = "anonymous";
+audio.loop = true;
+audio.play();
+
+const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+const source = audioCtx.createMediaElementSource(audio);
+const analyser = audioCtx.createAnalyser();
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+analyser.fftSize = 256;
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
+
+function getAmplitude() {
+  analyser.getByteFrequencyData(dataArray);
+  let sum = 0;
+  for(let i=0;i<dataArray.length;i++){ sum += dataArray[i]; }
+  return sum/dataArray.length/255; // normalize 0-1
+}
+
+// ===== ANIMATE ORBITS WITH AUDIO =====
 function animateOrbit() {
+  const amplitude = getAmplitude();
   orbitData.forEach(b=>{
     b.angle += b.speed;
     const rad = b.angle * Math.PI / 180;
+    const distance = b.baseDistance + amplitude*30; // pulsate orbit
+    const size = 120*(1 + amplitude*0.3); // pulse size
+    const glow = 0.5 + amplitude*1.5; // glow
     const btn = document.getElementById(b.id);
-    const x = Math.cos(rad) * b.distance + centerX - btn.offsetWidth/2;
-    const y = Math.sin(rad) * b.distance + centerY - btn.offsetHeight/2;
-    btn.style.left = `${x}px`;
-    btn.style.top = `${y}px`;
+    btn.style.left = `${Math.cos(rad)*distance + centerX - size/2}px`;
+    btn.style.top = `${Math.sin(rad)*distance + centerY - size/2}px`;
+    btn.style.width = btn.style.height = `${size}px`;
+    btn.style.boxShadow = `0 0 ${10*glow}px #70c2ff, 0 0 ${20*glow}px rgba(79,179,255,0.5), 0 0 ${40*glow}px rgba(79,179,255,0.3)`;
   });
   requestAnimationFrame(animateOrbit);
 }
@@ -191,36 +218,33 @@ function showSlide() {
 }
 showSlide();
 
-// ===== AUDIO WAVEFORM =====
-const audio = new Audio('voice.mp3');
-audio.crossOrigin = "anonymous";
-audio.loop = true;
-audio.play();
-
+// ===== CURVED NEON WAVEFORM =====
 const waveCanvas = document.getElementById('waveform');
 const wctx = waveCanvas.getContext('2d');
 function resizeWave(){ waveCanvas.width = window.innerWidth; waveCanvas.height = 150; }
 window.addEventListener('resize', resizeWave); resizeWave();
 
-const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-const source = audioCtx.createMediaElementSource(audio);
-const analyser = audioCtx.createAnalyser();
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-analyser.fftSize = 256;
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
-
 function drawWave() {
   requestAnimationFrame(drawWave);
   analyser.getByteFrequencyData(dataArray);
   wctx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
-  const barWidth = waveCanvas.width / bufferLength;
-  dataArray.forEach((v,i)=>{
-    const barHeight = v;
-    wctx.fillStyle = `rgba(79,179,255,0.7)`;
-    wctx.fillRect(i*barWidth, waveCanvas.height-barHeight, barWidth, barHeight);
-  });
+  wctx.beginPath();
+  const step = waveCanvas.width / bufferLength;
+  for(let i=0;i<bufferLength;i++){
+    const v = dataArray[i];
+    const x = i*step;
+    const y = waveCanvas.height - v*0.5;
+    if(i===0) wctx.moveTo(x,y);
+    else wctx.lineTo(x,y);
+  }
+  wctx.lineTo(waveCanvas.width, waveCanvas.height);
+  wctx.lineTo(0, waveCanvas.height);
+  wctx.closePath();
+  const grad = wctx.createLinearGradient(0,0,waveCanvas.width,waveCanvas.height);
+  grad.addColorStop(0,'rgba(79,179,255,0.5)');
+  grad.addColorStop(1,'rgba(0,100,255,0.8)');
+  wctx.fillStyle = grad;
+  wctx.fill();
 }
 drawWave();
 </script>
