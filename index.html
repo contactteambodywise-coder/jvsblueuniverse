@@ -119,7 +119,40 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
-#donate { width: 100px; height: 100px; z-index:10160; }
+
+/* ===== DONATE + PAUSE SPLIT BUTTON ===== */
+#donate {
+  width: 120px;
+  height: 120px;
+  z-index: 10160;
+  position: absolute;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#donate div {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#donate .pause-half {
+  background: rgba(79,179,255,0.6);
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+}
+
+#donate .donate-half {
+  background: rgba(79,179,255,0.3);
+}
+
+#donate .pause-half:hover { background: rgba(79,179,255,0.8); }
+#donate .donate-half:hover { background: rgba(79,179,255,0.5); }
+
 </style>
 </head>
 
@@ -137,7 +170,11 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
+    
+    <div class="cosmic-btn" id="donate">
+      <div class="pause-half">⏸</div>
+      <div class="donate-half">Donate</div>
+    </div>
   </div>
 </div>
 
@@ -175,7 +212,21 @@ function draw(){
 draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); }); });
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') {
+    btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+  }
+});
+
+/* ===== DONATE + PAUSE SPLIT FUNCTION ===== */
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ 
+  window.location.href='donate.html'; 
+});
+let paused = false;
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
+  paused = !paused; 
+});
 
 /* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
 const buttonData=[
@@ -201,8 +252,9 @@ function animateButtons(){
   const centerY=0;
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
+    if(paused) return;
     let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1); // subtle drift
+    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
     angle+=speed;
     if(angle>360) angle-=360;
     btn.dataset.angle=angle;
