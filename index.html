@@ -130,8 +130,6 @@ canvas {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 #donate div {
@@ -154,27 +152,26 @@ canvas {
   box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
 }
 
+/* Optional: separate border between halves */
 #donate .pause-half { border-bottom: none; }
 #donate .donate-half { border-top: none; }
 
-/* ===== SUN FLAMES CANVAS ===== */
+/* ===== SUN FLAME CANVAS ===== */
 #sun-flames {
   position: absolute;
+  width: 200px;
+  height: 200px;
   top: 50%;
   left: 50%;
-  width: 120px;
-  height: 120px;
-  pointer-events: none;
   transform: translate(-50%, -50%);
+  pointer-events: none;
   z-index: 10155;
 }
 </style>
 </head>
 
 <body>
-
 <canvas id="space"></canvas>
-<canvas id="sun-flames"></canvas>
 
 <div id="logo-wrapper">
   <div id="jv">J&V’s</div>
@@ -192,6 +189,8 @@ canvas {
       <div class="donate-half">Donate</div>
     </div>
   </div>
+
+  <canvas id="sun-flames"></canvas>
 </div>
 
 <script>
@@ -234,16 +233,14 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
 
 /* ===== DONATE + PAUSE SPLIT FUNCTION ===== */
 const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ 
-  window.location.href='donate.html'; 
-});
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
   paused = !paused; 
-  if(paused) snapshotPositions();
+  if(paused) alignPlanetsEvenly();
 });
 
-/* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
+/* ===== PLANET BUTTON ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
@@ -262,27 +259,28 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
-/* ===== ANIMATE BUTTONS WITH PAUSE SNAPSHOT ===== */
-let snapshotAngles=[];
-function snapshotPositions(){
-  snapshotAngles = buttonData.map(data => parseFloat(document.getElementById(data.id).dataset.angle));
+function alignPlanetsEvenly(){
+  const total = buttonData.length;
+  buttonData.forEach((data,i)=>{
+    const btn=document.getElementById(data.id);
+    const angle = (360/total)*i;
+    btn.dataset.angle = angle;
+    const rad = angle*Math.PI/180;
+    const distance=parseFloat(btn.dataset.distance);
+    const stretchX=parseFloat(btn.dataset.stretchX);
+    const stretchY=parseFloat(btn.dataset.stretchY);
+    const x=Math.cos(rad)*distance*stretchX;
+    const y=Math.sin(rad)*distance*stretchY;
+    btn.style.transform=`translate(${x}px, ${y}px)`;
+  });
 }
 
 function animateButtons(){
   const centerX=0; 
   const centerY=0;
-  buttonData.forEach((data,i)=>{
+  buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused){
-      const rad=snapshotAngles[i]*Math.PI/180;
-      const distance=parseFloat(btn.dataset.distance);
-      const stretchX=parseFloat(btn.dataset.stretchX);
-      const stretchY=parseFloat(btn.dataset.stretchY);
-      const x=Math.cos(rad)*distance*stretchX;
-      const y=Math.sin(rad)*distance*stretchY;
-      btn.style.transform=`translate(${x}px, ${y}px)`;
-      return;
-    }
+    if(paused) return;
     let angle=parseFloat(btn.dataset.angle);
     const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
     angle+=speed;
@@ -300,35 +298,44 @@ function animateButtons(){
 }
 animateButtons();
 
-/* ===== SUN FLAMES EFFECT ===== */
-const flamesCanvas = document.getElementById("sun-flames");
-const fCtx = flamesCanvas.getContext("2d");
-let fw = flamesCanvas.width = 120;
-let fh = flamesCanvas.height = 120;
+/* ===== SUN FLAME EFFECT ===== */
+const sunCanvas = document.getElementById("sun-flames");
+const sunCtx = sunCanvas.getContext("2d");
+let sunW = sunCanvas.width = 200;
+let sunH = sunCanvas.height = 200;
 
-function drawFlames(){
-  fCtx.clearRect(0,0,fw,fh);
-  const centerX = fw/2;
-  const centerY = fh/2;
-  const radius = fw/2;
-
-  for(let i=0;i<30;i++){
-    const angle = Math.random()*Math.PI*2;
-    const length = Math.random()*15 + 15;
-    const curl = Math.sin(Date.now()/300 + i) * 8;
-    const x = centerX + Math.cos(angle)*(radius + curl/2);
-    const y = centerY + Math.sin(angle)*(radius + curl/2);
-    fCtx.strokeStyle = `rgba(79,179,255,${Math.random()*0.7+0.3})`;
-    fCtx.lineWidth = 2;
-    fCtx.beginPath();
-    fCtx.moveTo(centerX + Math.cos(angle)*radius, centerY + Math.sin(angle)*radius);
-    fCtx.lineTo(x, y);
-    fCtx.stroke();
-  }
-
-  requestAnimationFrame(drawFlames);
+const flames = [];
+for(let i=0;i<50;i++){
+  flames.push({
+    angle: Math.random()*Math.PI*2,
+    radius: 60 + Math.random()*20,
+    length: 20 + Math.random()*30,
+    speed: 0.01 + Math.random()*0.02,
+    curl: (Math.random()-0.5)*0.3
+  });
 }
-drawFlames();
+
+function drawSunFlames(){
+  sunCtx.clearRect(0,0,sunW,sunH);
+  flames.forEach(f=>{
+    f.angle += f.speed;
+    const x0 = sunW/2 + Math.cos(f.angle)*f.radius;
+    const y0 = sunH/2 + Math.sin(f.angle)*f.radius;
+    const x1 = sunW/2 + Math.cos(f.angle+f.curl)* (f.radius + f.length);
+    const y1 = sunH/2 + Math.sin(f.angle+f.curl)* (f.radius + f.length);
+    const grad = sunCtx.createLinearGradient(x0,y0,x1,y1);
+    grad.addColorStop(0,'rgba(255,200,50,0.9)');
+    grad.addColorStop(1,'rgba(255,140,0,0)');
+    sunCtx.strokeStyle = grad;
+    sunCtx.lineWidth = 2;
+    sunCtx.beginPath();
+    sunCtx.moveTo(x0,y0);
+    sunCtx.lineTo(x1,y1);
+    sunCtx.stroke();
+  });
+  requestAnimationFrame(drawSunFlames);
+}
+drawSunFlames();
 </script>
 
 </body>
