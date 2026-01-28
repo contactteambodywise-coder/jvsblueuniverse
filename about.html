@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - About Us</title>
+<title>About Us - J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -45,6 +45,7 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes jv-breathe {
@@ -68,6 +69,7 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
 @keyframes blue-breathe {
@@ -114,7 +116,10 @@ canvas {
 }
 
 /* ===== INDIVIDUAL BUTTON SIZES ===== */
-#about { width: 130px; height: 130px; } /* now acts as Home */
+#home { width: 120px; height: 120px; }
+#about-text { width: 400px; height: 200px; border-radius: 20px; font-size: 22px; font-weight: normal; text-align: left; padding: 20px; cursor: default; background: rgba(0,0,0,0.3); box-shadow: 0 0 15px #70c2ff, 0 0 30px rgba(79,179,255,0.5); }
+
+/* Float animation handled in JS */
 </style>
 </head>
 
@@ -127,15 +132,14 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <!-- Only one button, now acts as Home -->
-    <div class="cosmic-btn" id="about" data-link="index.html">Home</div>
-  </div>
+    <!-- Home Button -->
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
 
-  <!-- ===== ABOUT US TEXT ===== -->
-  <div style="position:absolute; top:200px; left:50%; transform:translateX(-50%); color:#70c2ff; font-size:28px; text-align:center; z-index:10000;">
-    <p>Welcome to J&V’s Blue Universe!</p>
-    <p>We are passionate about creating cosmic experiences that inspire awe and curiosity.</p>
-    <p>Explore our universe and enjoy the journey.</p>
+    <!-- About Text Panel -->
+    <div class="cosmic-btn" id="about-text">
+      Welcome to J&V’s Blue Universe!<br><br>
+      Here, we explore cosmic creativity, innovation, and fun. Our universe is full of stars, planets, and cosmic surprises. Enjoy your journey!
+    </div>
   </div>
 </div>
 
@@ -174,8 +178,23 @@ draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+  const link = btn.getAttribute('data-link');
+  if(link) btn.addEventListener('click',()=>{ window.location.href=link; });
 });
+
+/* ===== FLOATING ABOUT TEXT ===== */
+const aboutText = document.getElementById('about-text');
+let floatAngle = 0;
+function floatAboutText(){
+  floatAngle += 0.01;
+  const radiusX = 10; // subtle horizontal float
+  const radiusY = 8;  // subtle vertical float
+  const x = Math.cos(floatAngle)*radiusX;
+  const y = Math.sin(floatAngle)*radiusY;
+  aboutText.style.transform = `translate(${x}px, ${y}px)`;
+  requestAnimationFrame(floatAboutText);
+}
+floatAboutText();
 </script>
 
 </body>
