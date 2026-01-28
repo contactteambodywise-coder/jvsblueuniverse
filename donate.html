@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Donate – J&V’s Blue Universe</title>
+<title>[PAGE TITLE] – J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -121,8 +121,6 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
-/* ===== HOME BUTTON (ONLY CHANGE: MAKE IT CIRCLE) ===== */
-#home-btn { width: 120px; height: 120px; border-radius: 50%; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -190,12 +188,14 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    <div class="cosmic-btn" id="home-btn" data-link="index.html">Home</div>
-
+    
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
     </div>
+    
+    <!-- Home button orbiting like planets -->
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
   </div>
 </div>
 
@@ -236,21 +236,6 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{
-    let target = btn.getAttribute('data-link');
-    window.location.href=target;
-  });
-});
-
-const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
-let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
-  paused = !paused;
-});
-
 /* ===== PLANETS ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
@@ -258,7 +243,7 @@ const buttonData=[
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
-  {id:'home-btn', distance:160, speed:0.2, stretchX:1, stretchY:1} // added home orbit
+  {id:'home', distance:380, speed:0.07, stretchX:1.1, stretchY:0.9} // Home button orbiting
 ];
 
 buttonData.forEach(data=>{
@@ -269,8 +254,11 @@ buttonData.forEach(data=>{
   btn.dataset.speed=data.speed;
   btn.dataset.stretchX=data.stretchX;
   btn.dataset.stretchY=data.stretchY;
+  btn.style.pointerEvents = "auto"; // make text clickable
 });
 
+// Animate buttons
+let paused = false;
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
@@ -291,6 +279,17 @@ function animateButtons(){
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
+
+/* ===== BUTTON EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+});
+
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+});
 </script>
 
 </body>
