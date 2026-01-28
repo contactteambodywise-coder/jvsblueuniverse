@@ -108,29 +108,31 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  gap: 20px;
-  pointer-events: auto;
+  width: 140px;
+  height: 140px;
   z-index: 10200;
 }
 #sun-buttons div {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #70c2ff;
+  width: 50%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #70c2ff;
-  font-size: 48px;
+  border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5),0 0 40px rgba(79,179,255,0.3);
+  font-size: 48px;
+  color: #70c2ff;
+  border: 2px solid #70c2ff;
+  background: rgba(0,0,0,0.25);
+  box-shadow: 0 0 10px #70c2ff,0 0 20px rgba(79,179,255,0.5),0 0 40px rgba(79,179,255,0.3);
   transition: all 0.3s ease-in-out;
 }
 #sun-buttons div:hover {
   background: rgba(0,0,0,0.5);
   box-shadow: 0 0 20px #70c2ff,0 0 40px rgba(79,179,255,0.7),0 0 60px rgba(79,179,255,0.5);
 }
+#sun-buttons .pause-half { border-top-left-radius: 50%; border-bottom-left-radius: 50%; border-right: none; }
+#sun-buttons .home-half { border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-left: none; }
 
 #page-content {
   position: absolute;
@@ -167,8 +169,8 @@ canvas {
   </div>
 
   <div id="sun-buttons">
-    <div id="pause-btn">⏸</div>
-    <div id="home-btn">🏠</div>
+    <div class="pause-half">⏸</div>
+    <div class="home-half">🏠</div>
   </div>
 </div>
 
@@ -177,7 +179,7 @@ canvas {
 </div>
 
 <script>
-// Canvas and stars (same as main page)
+// Canvas stars
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
@@ -202,14 +204,12 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
 
-// Sun buttons behavior
-const pauseBtn = document.getElementById('pause-btn');
-const homeBtn = document.getElementById('home-btn');
+// Split home/pause button
 let paused=false;
-pauseBtn.addEventListener('click',()=>{ paused=!paused; });
-homeBtn.addEventListener('click',()=>{ window.location.href='index.html'; });
+document.querySelector('#sun-buttons .pause-half').addEventListener('click',()=>{ paused=!paused; });
+document.querySelector('#sun-buttons .home-half').addEventListener('click',()=>{ window.location.href='index.html'; });
 
-// Planets orbiting
+// Planet orbits
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
