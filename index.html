@@ -153,13 +153,8 @@ canvas {
 }
 
 /* Optional: separate border between halves */
-#donate .pause-half {
-  border-bottom: none;
-}
-#donate .donate-half {
-  border-top: none;
-}
-
+#donate .pause-half { border-bottom: none; }
+#donate .donate-half { border-top: none; }
 </style>
 </head>
 
@@ -186,56 +181,81 @@ canvas {
 </div>
 
 <script>
-/* ===== SPACE CANVAS (unchanged) ===== */
+/* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
+
 function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
-window.addEventListener("resize", resize); resize();
-let px=0, py=0;
-window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
+window.addEventListener("resize", resize);
+resize();
 
 const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:Math.random(), r:Math.random()*2+2}));
-const nebulae = Array.from({length:2},()=>{
-  const hue=210+Math.random()*60;
-  const z=Math.random()+0.5;
-  return { x: Math.random()*w, y: Math.random()*h, r: Math.random()*500+400, dx:(Math.random()-0.5)*0.04, dy:(Math.random()-0.5)*0.04, z, hue, color:`hsla(${hue},70%,50%,0.07)`, particles:Array.from({length:Math.floor(Math.random()*80)+150},()=>({x:Math.random()*4+1,y:Math.random()*4+1})), stars:Array.from({length:Math.floor(Math.random()*50)+50},()=>({angle:Math.random()*Math.PI*2, radius:Math.random()*180+80, size:Math.random()*1+0.2, alpha:Math.random()*0.5+0.1, speed:(Math.random()-0.5)*0.001})) };
-});
 
-let shootingStars=[];
-function spawnShootingStar(){ const z=Math.random()*0.8+0.2; const fireball=Math.random()<0.01; shootingStars.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()*10-5)*z, vy:(Math.random()*10-5)*z, z, fireball, width:fireball?Math.random()*2+4:Math.random()*1.2+1.4, color: fireball?"255,180,80":"255,255,255"}); }
-setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
+/* ===== COSMIC WORM FRIEND 🐛 ===== */
+const worm = {
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.6 + 0.4,
+  angle: Math.random() * Math.PI * 2,
+  turnRate: (Math.random() - 0.5) * 0.01,
+  speed: 0.25,
+  length: 14,
+  wiggle: Math.random() * 1000
+};
 
-function draw(){
+function drawWorm() {
+  ctx.save();
+  ctx.globalAlpha = 0.4 * worm.z;
+  ctx.translate(worm.x, worm.y);
+  ctx.rotate(worm.angle);
+  ctx.scale(worm.z, worm.z);
+  ctx.beginPath();
+  for (let i = 0; i < worm.length; i++) {
+    const offset = Math.sin(worm.wiggle + i * 0.6) * 4;
+    ctx.lineTo(-i * 6, offset);
+  }
+  ctx.strokeStyle = "rgba(120,200,255,0.8)";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.stroke();
+  ctx.restore();
+}
+
+function updateWorm() {
+  worm.wiggle += 0.15;
+  worm.angle += worm.turnRate;
+  worm.x += Math.cos(worm.angle) * worm.speed * worm.z * 4;
+  worm.y += Math.sin(worm.angle) * worm.speed * worm.z * 4;
+  if (Math.random() < 0.01) worm.turnRate = (Math.random()-0.5)*0.02;
+  if (worm.x<-200) worm.x=w+200;
+  if (worm.x>w+200) worm.x=-200;
+  if (worm.y<-200) worm.y=h+200;
+  if (worm.y>h+200) worm.y=-200;
+}
+
+/* ===== DRAW LOOP ===== */
+function draw() {
   ctx.clearRect(0,0,w,h);
-  ctx.globalCompositeOperation="screen";
-  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
-  ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
-  stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
-  ctx.globalAlpha=1;
-  shootingStars.forEach((s,i)=>{ const tail=(s.fireball?40:20)*s.z; const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail); grad.addColorStop(0,`rgba(${s.color},${0.9*s.z})`); grad.addColorStop(0.3,`rgba(${s.color},${0.5*s.z})`); grad.addColorStop(1,`rgba(${s.color},0)`); ctx.strokeStyle=grad; ctx.lineWidth=s.width*s.z; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail); ctx.stroke(); s.x+=s.vx; s.y+=s.vy; if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1); });
+  stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
+  updateWorm();
+  drawWorm();
   requestAnimationFrame(draw);
 }
 draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') {
-    btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
-  }
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
 
 /* ===== DONATE + PAUSE SPLIT FUNCTION ===== */
 const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ 
-  window.location.href='donate.html'; 
-});
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
 let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
-  paused = !paused; 
-});
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused=!paused; });
 
-/* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
+/* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS WITH PAUSE ALIGNMENT ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
@@ -244,34 +264,38 @@ const buttonData=[
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
 ];
 
-buttonData.forEach(data=>{
+buttonData.forEach((data,i)=>{
   const btn=document.getElementById(data.id);
-  let angle=Math.random()*360;
-  btn.dataset.angle=angle;
-  btn.dataset.distance=data.distance;
-  btn.dataset.speed=data.speed;
-  btn.dataset.stretchX=data.stretchX;
-  btn.dataset.stretchY=data.stretchY;
+  const angle = Math.random()*360;
+  btn.dataset.angle = angle;
+  btn.dataset.distance = data.distance;
+  btn.dataset.speed = data.speed;
+  btn.dataset.stretchX = data.stretchX;
+  btn.dataset.stretchY = data.stretchY;
 });
 
 function animateButtons(){
-  const centerX=0; 
-  const centerY=0;
-  buttonData.forEach(data=>{
+  const centerX=0, centerY=0;
+  const numButtons = buttonData.length;
+  buttonData.forEach((data,i)=>{
     const btn=document.getElementById(data.id);
-    if(paused) return;
     let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
-    const rad=angle*Math.PI/180;
-    const distance=parseFloat(btn.dataset.distance);
-    const stretchX=parseFloat(btn.dataset.stretchX);
-    const stretchY=parseFloat(btn.dataset.stretchY);
-    const x=Math.cos(rad)*distance*stretchX;
-    const y=Math.sin(rad)*distance*stretchY;
-    btn.style.transform=`translate(${x}px, ${y}px)`;
+    if(!paused){
+      angle += parseFloat(data.speed)*(0.95+Math.random()*0.1);
+      if(angle>360) angle-=360;
+      btn.dataset.angle = angle;
+    } else {
+      // evenly spread around the sun
+      angle = i * (360/numButtons);
+      btn.dataset.angle = angle;
+    }
+    const rad = angle*Math.PI/180;
+    const distance = parseFloat(btn.dataset.distance);
+    const stretchX = parseFloat(btn.dataset.stretchX);
+    const stretchY = parseFloat(btn.dataset.stretchY);
+    const x = Math.cos(rad)*distance*stretchX;
+    const y = Math.sin(rad)*distance*stretchY;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
   });
   requestAnimationFrame(animateButtons);
 }
