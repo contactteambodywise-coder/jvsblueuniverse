@@ -172,6 +172,29 @@ canvas {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
   z-index: 10000;
 }
+
+/* ===== HOME BUTTON STYLE (CIRCULAR) ===== */
+#home-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #70c2ff;
+  font-size: 20px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid #70c2ff;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+#home-btn:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+}
 </style>
 </head>
 <body>
@@ -188,15 +211,14 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-
-    <!-- New floating Home planet -->
-    <div class="cosmic-btn" id="home-btn" data-link="index.html">Home</div>
-
-    <!-- Donate/Pause split button -->
+    
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
     </div>
+
+    <!-- New Home button -->
+    <div class="cosmic-btn" id="home-btn">Home</div>
   </div>
 </div>
 
@@ -228,16 +250,7 @@ setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 function draw(){
   ctx.clearRect(0,0,w,h);
   ctx.globalCompositeOperation="screen";
-  nebulae.forEach(n=>{
-    n.x+=n.dx; n.y+=n.dy; 
-    const glowRadius=n.r*n.z*1.2;
-    const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius);
-    grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`);
-    grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`);
-    ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill();
-    n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); });
-    n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); });
-  });
+  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
   ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
   stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
   ctx.globalAlpha=1;
@@ -246,14 +259,25 @@ function draw(){
 }
 draw();
 
+/* ===== BUTTON EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+});
+
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
+let paused = false;
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+});
+
 /* ===== PLANETS ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
-  {id:'home-btn', distance:160, speed:0.2, stretchX:1.1, stretchY:0.9} // new Home planet
+  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
 ];
 
 buttonData.forEach(data=>{
@@ -266,8 +290,6 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
-// Animate planets
-let paused = false;
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
@@ -289,17 +311,8 @@ function animateButtons(){
 }
 animateButtons();
 
-/* ===== BUTTON CLICK EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{
-    window.location.href = btn.getAttribute('data-link');
-  });
-});
-
-// Donate/Pause split button events
-const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused = !paused; });
+/* ===== HOME BUTTON CLICK ===== */
+document.getElementById('home-btn').addEventListener('click',()=>{ window.location.href='index.html'; });
 
 </script>
 
