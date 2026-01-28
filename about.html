@@ -106,7 +106,7 @@ canvas {
   align-items: center;
   padding: 0;
   word-wrap: break-word;
-  pointer-events: auto; /* Ensure buttons are clickable even with text over them */
+  pointer-events: auto; /* ensure buttons are clickable */
 }
 
 .cosmic-btn:hover {
@@ -160,7 +160,7 @@ canvas {
 /* ===== ABOUT US TEXT ===== */
 #about-text {
   position: absolute;
-  top: 315px; /* Moved down 15px */
+  top: 315px; /* moved down 15px */
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -171,7 +171,7 @@ canvas {
   color: #70c2ff;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
   z-index: 10000;
-  pointer-events: none; /* Ensure text does NOT block button clicks */
+  pointer-events: none; /* allow clicks through text */
 }
 </style>
 </head>
@@ -244,7 +244,16 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
 const donateBtn = document.getElementById('donate');
 donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
 let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused=!paused; });
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+  // Snap planets to evenly spaced angles when paused
+  buttonData.forEach((data,i)=>{
+    const btn=document.getElementById(data.id);
+    if(paused){
+      btn.dataset.angle = (360/buttonData.length)*i;
+    }
+  });
+});
 
 /* ===== PLANETS ORBITS ===== */
 const buttonData=[
@@ -270,7 +279,7 @@ function animateButtons(){
   const centerY=0;
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused) return;
+    if(paused) return; // stop rotation
     let angle=parseFloat(btn.dataset.angle);
     const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
     angle+=speed;
