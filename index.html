@@ -127,7 +127,7 @@ canvas {
   opacity: 1;
 }
 
-/* ===== UPDATED HEART-SHAPED DONATE BUTTON ===== */
+/* ===== FIXED HEART-SHAPED DONATE BUTTON ===== */
 #donate {
   position: absolute;
   top: 300px;
@@ -141,21 +141,22 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 8% 8% 50% 50%; /* smooth bottom */
 }
 
-/* Top lobes slightly smaller to avoid overlapping text */
+/* Top lobes perfectly aligned and smaller */
 #donate::before,
 #donate::after {
   content: "";
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, rgba(220,70,100,1), rgba(180,30,70,1));
   border-radius: 50%;
 }
 
-#donate::before { top: -25px; left: 0; }
-#donate::after { top: 0; left: 25px; }
+#donate::before { top: -18px; left: 0; }   /* left lobe */
+#donate::after { top: 0; left: 18px; }     /* right lobe */
 
 /* Text rotated upright and nudged forward */
 #donate span { 
@@ -269,7 +270,7 @@ canvas {
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
     </div>
 
-    <!-- Updated heart Donate button -->
+    <!-- Fixed heart Donate button -->
     <a href="https://www.paypal.me/JohnBender612" id="donate" target="_blank" rel="noopener noreferrer">
       <span>Donate</span>
     </a>
