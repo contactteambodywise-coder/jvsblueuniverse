@@ -18,8 +18,6 @@ canvas {
   inset: 0;
   z-index: 1;
 }
-
-/* Cosmic Worm Styles */
 </style>
 </head>
 <body>
@@ -31,7 +29,10 @@ canvas {
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
-function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
 window.addEventListener("resize", resize);
 resize();
 
@@ -62,7 +63,6 @@ function spawnShootingStar() {
   });
 }
 
-/* Spawn at interval */
 setInterval(() => { if(Math.random()<0.01) spawnShootingStar(); }, 50);
 
 /* ===== COSMIC WORM ===== */
