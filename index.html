@@ -2,15 +2,107 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe</title>
-<link rel="stylesheet" href="style.css">
+<title>J&V’s Blue Universe - Static 3D Starfield</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+</style>
 </head>
 <body>
 
-<!-- Full-screen Canvas -->
 <canvas id="space"></canvas>
 
-<!-- Link main JS -->
-<script src="main.js"></script>
+<script>
+/* ===== CANVAS SETUP ===== */
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+
+let width = window.innerWidth;
+let height = window.innerHeight;
+
+function resizeCanvas() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+/* ===== STARFIELD DATA ===== */
+const numStars = 600;
+const stars = [];
+
+for (let i = 0; i < numStars; i++) {
+  stars.push({
+    x: Math.random() * width - width/2,
+    y: Math.random() * height - height/2,
+    z: Math.random() * width,
+    size: Math.random() * 1.5 + 0.5
+  });
+}
+
+/* ===== INTERACTION ===== */
+const pointer = { x: 0, y: 0 };
+let tilt = { x: 0, y: 0 };
+
+// Mouse interaction
+window.addEventListener("mousemove", e => {
+  pointer.x = (e.clientX - width/2) / width * 2;
+  pointer.y = (e.clientY - height/2) / height * 2;
+});
+
+// Mobile tilt interaction
+window.addEventListener("deviceorientation", e => {
+  // gamma = left-right tilt, beta = front-back tilt
+  tilt.x = e.gamma ? e.gamma / 30 : 0; // normalize
+  tilt.y = e.beta ? e.beta / 30 : 0;
+});
+
+/* ===== DRAW LOOP ===== */
+function drawStars() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, width, height);
+
+  const focalLength = width / 2;
+
+  stars.forEach(star => {
+    // Move star forward slightly
+    star.z -= 2;
+    if (star.z <= 0) {
+      star.z = width;
+      star.x = Math.random() * width - width/2;
+      star.y = Math.random() * height - height/2;
+    }
+
+    // 3D projection with interaction
+    const sx = (star.x + pointer.x*200 + tilt.x*200) * (focalLength / star.z) + width/2;
+    const sy = (star.y + pointer.y*200 + tilt.y*200) * (focalLength / star.z) + height/2;
+
+    const radius = star.size * (focalLength / star.z);
+
+    ctx.beginPath();
+    ctx.arc(sx, sy, radius, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${1 - star.z/width})`;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(drawStars);
+}
+
+/* ===== START ANIMATION ===== */
+drawStars();
+</script>
+
 </body>
 </html>
