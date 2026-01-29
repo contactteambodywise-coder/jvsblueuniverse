@@ -5,16 +5,19 @@ const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;  // High-DPI support
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+  ctx.scale(dpr, dpr);
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 /* 2️⃣ Stars Setup */
 const stars = Array.from({ length: 300 }, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
   r: Math.random() * 1.5 + 0.5,
   a: Math.random() * 0.8 + 0.2
 }));
@@ -32,7 +35,7 @@ function drawStars() {
 
 /* 3️⃣ Main Draw Loop */
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
   drawStars(); // draw stars
   requestAnimationFrame(draw); // loop
 }
