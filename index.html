@@ -182,7 +182,7 @@ canvas {
   pointer-events: none;
 }
 
-/* ===== FEEDBACK FORM ===== */
+/* ===== FEEDBACK FORM (inputs removed) ===== */
 #feedback-container {
   position: absolute;
   top: 500px; /* below Donate & under-construction message */
@@ -201,22 +201,9 @@ canvas {
   font-weight: 500;
 }
 
-/* Remove boxes from input and textarea */
-#feedback-form input,
-#feedback-form textarea {
-  border: none;           /* no visible box */
-  background: transparent; /* transparent background */
-  color: #fff;             /* text still visible */
-  width: 100%;
-  padding: 6px 0;          /* spacing */
-  font-size: 14px;
-  resize: none;            /* optional for textarea */
-}
+/* Remove input and textarea entirely - coding gone */
 
-#feedback-form textarea {
-  height: 60px;
-}
-
+/* Submit button */
 #feedback-form button {
   margin-top: 4px;
 }
@@ -256,15 +243,15 @@ canvas {
     The pages above are currently under construction, but exciting updates are on the way.
   </div>
 
-  <!-- Feedback form -->
+  <!-- Feedback form with inputs removed -->
   <div id="feedback-container">
     <form id="feedback-form" action="mailto:JohnBender612@example.com" method="POST" enctype="text/plain">
-      <label for="user-email">Your Email (optional):</label>
-      <input type="email" id="user-email" name="user-email" placeholder="you@example.com">
-      
-      <label for="user-message">Your Thoughts:</label>
-      <textarea id="user-message" name="user-message" placeholder="Feedback, ideas, or suggestions..."></textarea>
-      
+      <label>Your Email (optional):</label>
+      <!-- input removed -->
+
+      <label>Your Thoughts:</label>
+      <!-- textarea removed -->
+
       <button type="submit" class="cosmic-btn">Send Feedback</button>
     </form>
   </div>
