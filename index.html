@@ -40,7 +40,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 /* ===== STARFIELD DATA ===== */
-const numStars = 600;
+const numStars = 500; // updated star count
 const stars = [];
 
 for (let i = 0; i < numStars; i++) {
@@ -48,7 +48,7 @@ for (let i = 0; i < numStars; i++) {
     x: Math.random() * width - width/2,
     y: Math.random() * height - height/2,
     z: Math.random() * width,
-    size: Math.random() * 1.5 + 0.5
+    size: Math.random() * 1.5 + 0.5 // star size unchanged
   });
 }
 
@@ -58,14 +58,13 @@ let tilt = { x: 0, y: 0 };
 
 // Mouse interaction
 window.addEventListener("mousemove", e => {
-  pointer.x = (e.clientX - width/2) / width * 2;
+  pointer.x = (e.clientX - width/2) / width * 2; // normalized
   pointer.y = (e.clientY - height/2) / height * 2;
 });
 
 // Mobile tilt interaction
 window.addEventListener("deviceorientation", e => {
-  // gamma = left-right tilt, beta = front-back tilt
-  tilt.x = e.gamma ? e.gamma / 30 : 0; // normalize
+  tilt.x = e.gamma ? e.gamma / 30 : 0; // normalized
   tilt.y = e.beta ? e.beta / 30 : 0;
 });
 
@@ -78,7 +77,7 @@ function drawStars() {
 
   stars.forEach(star => {
     // Move star forward slightly
-    star.z -= 2;
+    star.z -= 1; // updated star speed
     if (star.z <= 0) {
       star.z = width;
       star.x = Math.random() * width - width/2;
@@ -86,8 +85,8 @@ function drawStars() {
     }
 
     // 3D projection with interaction
-    const sx = (star.x + pointer.x*200 + tilt.x*200) * (focalLength / star.z) + width/2;
-    const sy = (star.y + pointer.y*200 + tilt.y*200) * (focalLength / star.z) + height/2;
+    const sx = (star.x + pointer.x*100 + tilt.x*100) * (focalLength / star.z) + width/2;
+    const sy = (star.y + pointer.y*100 + tilt.y*100) * (focalLength / star.z) + height/2;
 
     const radius = star.size * (focalLength / star.z);
 
