@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Starfield Home</title>
+<title>J&V’s Blue Universe – Starfield Home</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
+    background: black;
     overflow: hidden;
     width: 100%;
     height: 100%;
-    background: black;
   }
+
   canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Cosmic Worm Styles */
+  .worm {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
   }
 </style>
 </head>
@@ -24,9 +34,9 @@
 <canvas id="space"></canvas>
 
 <script>
+/* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-
 let w, h;
 function resize() {
   w = canvas.width = window.innerWidth;
@@ -35,123 +45,82 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-// Cheat sheet numbers
-const starCount = 800;
-const minSize = 0.5;
-const maxSize = 2;
-const speedBase = 0.2;
-const mouseInteract = 100;
-const tiltInteract = 100;
-const depthMin = 0.2;
-const depthMax = 1;
-const alphaMin = 0.2;
-const alphaMax = 1;
-const shootingSpawnRate = 0.01;
-const shootingTrail = 30;
-const shootingColor = "255,255,255";
-const layersCount = 3;
-const layerSpeedMultipliers = [0.8, 1, 1.2];
-const sizeVariation = 0.3;
-const brightnessVariation = 0.25;
-const driftSpeed = 0.01;
+const stars = Array.from({length: 800}, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,
+  a: Math.random() * 0.8 + 0.2,
+  r: Math.random() * 1.5 + 0.5
+}));
 
-// Track mouse & tilt
-let mx = 0, my = 0;
-window.addEventListener("mousemove", e => {
-  mx = (e.clientX - w/2)/w*mouseInteract;
-  my = (e.clientY - h/2)/h*mouseInteract;
-});
-window.addEventListener("deviceorientation", e => {
-  mx = (e.gamma||0)/45*tiltInteract;
-  my = (e.beta||0)/45*tiltInteract;
-});
+let px = 0, py = 0;
+window.addEventListener("mousemove", e => { px = (e.clientX - w/2) / 100; py = (e.clientY - h/2) / 100; });
+window.addEventListener("deviceorientation", e => { px = (e.gamma || 0)/45 * 100; py = (e.beta || 0)/45 * 100; });
 
-// Star class
-class Star {
-  constructor(layer) {
-    this.layer = layer;
-    this.reset();
-  }
-  reset() {
-    this.x = Math.random()*w;
-    this.y = Math.random()*h;
-    this.z = Math.random()*(depthMax-depthMin)+depthMin;
-    this.size = Math.random()*(maxSize-minSize)+minSize;
-    this.alpha = Math.random()*(alphaMax-alphaMin)+alphaMin;
-  }
-  draw() {
-    ctx.globalAlpha = this.alpha;
+function drawStars() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    ctx.globalAlpha = s.a * s.z;
     ctx.beginPath();
-    ctx.arc(this.x+mx*this.z, this.y+my*this.z, this.size, 0, Math.PI*2);
+    ctx.arc(s.x + px * s.z, s.y + py * s.z, s.r * s.z, 0, Math.PI*2);
     ctx.fillStyle = "white";
     ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-  update() {
-    this.y += speedBase*layerSpeedMultipliers[this.layer-1];
-    this.y += driftSpeed;
-    if (this.y > h) this.y = 0;
-  }
-}
-
-// Shooting Star class
-class ShootingStar {
-  constructor() {
-    this.x = Math.random()*w;
-    this.y = Math.random()*h;
-    this.vx = (Math.random()*10-5)*0.5;
-    this.vy = (Math.random()*10-5)*0.5;
-    this.length = shootingTrail;
-  }
-  draw() {
-    const grad = ctx.createLinearGradient(this.x,this.y,this.x-this.vx*this.length,this.y-this.vy*this.length);
-    grad.addColorStop(0, `rgba(${shootingColor},1)`);
-    grad.addColorStop(1, `rgba(${shootingColor},0)`);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(this.x,this.y);
-    ctx.lineTo(this.x-this.vx*this.length,this.y-this.vy*this.length);
-    ctx.stroke();
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-  }
-}
-
-// Initialize layers of stars
-const stars = [];
-for (let l=1;l<=layersCount;l++) {
-  for (let i=0;i<Math.floor(starCount/layersCount);i++) {
-    stars.push(new Star(l));
-  }
-}
-
-let shootingStars = [];
-
-function spawnShootingStar() {
-  if (Math.random() < shootingSpawnRate) shootingStars.push(new ShootingStar());
-}
-
-// Draw loop
-function draw() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0,0,w,h);
-
-  stars.forEach(s => { s.update(); s.draw(); });
-
-  shootingStars.forEach((s,i) => {
-    s.update();
-    s.draw();
-    if (s.x<-50 || s.x>w+50 || s.y<-50 || s.y>h+50) shootingStars.splice(i,1);
   });
-
-  spawnShootingStar();
-  requestAnimationFrame(draw);
 }
 
-draw();
+/* ===== COSMIC WORM ===== */
+const worm = {
+  x: Math.random() * w,
+  y: Math.random() * h,
+  size: 40 + Math.random() * 30,
+  color: "rgba(0,150,255,0.9)",
+  mist: "rgba(255,255,100,0.2)",
+  vx: (Math.random()-0.5)*1.5,
+  vy: (Math.random()-0.5)*1.5
+};
+
+function drawWorm() {
+  // Body
+  ctx.beginPath();
+  ctx.arc(worm.x, worm.y, worm.size, 0, Math.PI*2);
+  ctx.fillStyle = worm.color;
+  ctx.fill();
+
+  // Yellow mist trail
+  ctx.beginPath();
+  ctx.arc(worm.x, worm.y, worm.size*1.5, 0, Math.PI*2);
+  ctx.fillStyle = worm.mist;
+  ctx.fill();
+}
+
+function updateWorm() {
+  worm.x += worm.vx;
+  worm.y += worm.vy;
+
+  // Bounce off edges
+  if(worm.x < 0 || worm.x > w) worm.vx *= -1;
+  if(worm.y < 0 || worm.y > h) worm.vy *= -1;
+
+  // Slight random wiggle
+  worm.vx += (Math.random()-0.5)*0.2;
+  worm.vy += (Math.random()-0.5)*0.2;
+
+  // Clamp speed
+  if(worm.vx > 1.5) worm.vx = 1.5;
+  if(worm.vx < -1.5) worm.vx = -1.5;
+  if(worm.vy > 1.5) worm.vy = 1.5;
+  if(worm.vy < -1.5) worm.vy = -1.5;
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  drawStars();
+  updateWorm();
+  drawWorm();
+  requestAnimationFrame(animate);
+}
+
+animate();
 </script>
 
 </body>
