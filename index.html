@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - Static 3D Starfield</title>
+<title>J&V’s Blue Universe - Starfield with Wormhole Button</title>
 <style>
 html, body {
   margin: 0;
@@ -11,6 +11,7 @@ html, body {
   width: 100%;
   height: 100%;
   background: black;
+  font-family: sans-serif;
 }
 
 canvas {
@@ -18,11 +19,36 @@ canvas {
   width: 100%;
   height: 100%;
 }
+
+/* Wormhole button styling */
+#wormholeButton {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #0ff, #00f, #000);
+  box-shadow: 0 0 50px #0ff, 0 0 100px #00f inset;
+  border: 2px solid #0ff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hover effect for more 3D feel */
+#wormholeButton:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 80px #0ff, 0 0 150px #00f inset;
+}
 </style>
 </head>
 <body>
 
 <canvas id="space"></canvas>
+
+<!-- Wormhole button -->
+<div id="wormholeButton"></div>
 
 <script>
 const canvas = document.getElementById("space");
@@ -70,15 +96,14 @@ function drawStars() {
   const focalLength = width / 2;
 
   stars.forEach(star => {
-    // Star speed is 0, no forward movement
-
+    // Star speed is 0
     if (star.z <= 0) {
       star.z = width;
       star.x = Math.random() * width - width/2;
       star.y = Math.random() * height - height/2;
     }
 
-    // Mouse influence slowed to half (12.5), tilt still 25
+    // Mouse influence 12.5, tilt 25
     const sx = (star.x + pointer.x*12.5 + tilt.x*25) * (focalLength / star.z) + width/2;
     const sy = (star.y + pointer.y*12.5 + tilt.y*25) * (focalLength / star.z) + height/2;
     const radius = star.size * (focalLength / star.z);
@@ -93,6 +118,12 @@ function drawStars() {
 }
 
 drawStars();
+
+// Wormhole button click event
+const wormhole = document.getElementById("wormholeButton");
+wormhole.addEventListener("click", () => {
+  alert("Wormhole activated! 🚀");
+});
 </script>
 
 </body>
