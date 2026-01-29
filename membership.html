@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Playground – Control Box Test</title>
+<title>Membership Playground</title>
 
 <style>
-/* ===================== GLOBAL RESET ===================== */
 html, body {
   margin: 0;
   padding: 0;
@@ -13,59 +12,62 @@ html, body {
   height: 100%;
   background: black;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* ===================== CANVAS ===================== */
+/* ================= CANVAS ================= */
 canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
 }
 
-/* =========================================================
-================== BEGIN CONTROL INPUT BOX =================
-========================================================= */
-#control-panel {
+/* ================= REFRESHER PANEL ================= */
+#refresher-panel {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 30px;
+  right: 30px;
   z-index: 9999;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.75);
   border: 3px solid #70c2ff;
-  border-radius: 12px;
-  padding: 18px 22px;
+  border-radius: 16px;
 
+  padding: 20px;
   box-shadow:
-    0 0 15px rgba(112,194,255,0.7),
+    0 0 15px rgba(112,194,255,0.6),
     0 0 30px rgba(112,194,255,0.4);
 }
 
-#control-panel label {
+/* ================= LABEL ================= */
+#refresher-panel label {
   display: block;
+  font-size: 22px;
+  font-weight: bold;
   color: #70c2ff;
-  font-size: 22px; /* 👈 CHANGE THIS TO MAKE TEXT BIGGER */
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-#control-panel input {
-  width: 260px;
-  height: 48px;
-
-  font-size: 24px; /* 👈 THIS IS THE MAIN EYE-SAVER */
-  padding: 6px 10px;
-
-  color: #000;
-  background: #e8f4ff;
-
-  border: none;
-  border-radius: 8px;
+/* ================= INPUT BOX ================= */
+#refresh-input {
+  width: 220px;
+  font-size: 26px;        /* 👈 BIG TEXT */
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #70c2ff;
   outline: none;
+
+  background: black;
+  color: #70c2ff;
+  text-align: center;
 }
-/* =========================================================
-=================== END CONTROL INPUT BOX ==================
-========================================================= */
+
+/* Remove ugly number arrows */
+#refresh-input::-webkit-inner-spin-button,
+#refresh-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>
 </head>
 
@@ -73,14 +75,16 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<!-- ================= CONTROL PANEL ================= -->
-<div id="control-panel">
-  <label for="refreshInput">Refresher Value</label>
-  <input id="refreshInput" type="number" value="1000">
+<!-- ================= REFRESHER CONTROL ================= -->
+<div id="refresher-panel">
+  <label for="refresh-input">Auto Refresh (seconds)</label>
+  <input id="refresh-input" type="number" value="10" min="1">
 </div>
 
 <script>
-/* ===================== CANVAS SETUP ===================== */
+/**********************************************************************
+========================= CANVAS SAFE LOOP ============================
+**********************************************************************/
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
@@ -91,30 +95,29 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* ===================== BASIC DRAW LOOP ===================== */
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // simple visual so you KNOW canvas is alive
-  ctx.fillStyle = "rgba(112,194,255,0.15)";
-  ctx.beginPath();
-  ctx.arc(
-    canvas.width / 2,
-    canvas.height / 2,
-    120,
-    0,
-    Math.PI * 2
-  );
-  ctx.fill();
-
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // IMPORTANT
   requestAnimationFrame(draw);
 }
 draw();
 
-/* ===================== INPUT TEST ===================== */
-const input = document.getElementById("refreshInput");
-input.addEventListener("input", () => {
-  console.log("Refresher value:", input.value);
+/**********************************************************************
+========================= AUTO REFRESH LOGIC ==========================
+**********************************************************************/
+let refreshTimer = null;
+
+function startRefresher(seconds) {
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => {
+    location.reload();
+  }, seconds * 1000);
+}
+
+const input = document.getElementById("refresh-input");
+startRefresher(parseInt(input.value, 10));
+
+input.addEventListener("change", () => {
+  startRefresher(parseInt(input.value, 10));
 });
 </script>
 
