@@ -127,46 +127,44 @@ canvas {
   opacity: 1;
 }
 
-/* ===== HEART-SHAPED DONATE BUTTON ===== */
+/* ===== PROPER HEART-SHAPED DONATE BUTTON ===== */
 #donate {
   position: absolute;
   top: 300px;
   left: calc(50% + 400px);
-  transform: translateX(-50%);
-  width: 100px;
-  height: 90px;
+  width: 60px;
+  height: 60px;
   background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
+  transform: rotate(-45deg);
   cursor: pointer;
+  z-index: 10150;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
-  z-index: 10150;
-  position: relative;
 }
 
-/* Heart top bumps */
+/* Heart top lobes */
 #donate::before,
 #donate::after {
   content: "";
   position: absolute;
-  width: 50px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
   border-radius: 50%;
 }
 
-#donate::before {
-  top: -40px;
-  left: 0;
-}
+#donate::before { top: -30px; left: 0; }
+#donate::after { top: 0; left: 30px; }
 
-#donate::after {
-  top: -40px;
-  right: 0;
+/* Rotate text back upright */
+#donate span { 
+  transform: rotate(45deg);
+  display: block;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* Gentle, non-pressuring text near Donate */
@@ -244,9 +242,9 @@ canvas {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  color: rgba(160, 200, 235, 0.85);
+  color: rgba(160, 200, 235,0.85);
   font-size: 14px;
-  text-shadow: 0 0 4px rgba(80, 140, 200, 0.25);
+  text-shadow: 0 0 4px rgba(80, 140, 200,0.25);
   z-index: 10260;
 }
 </style>
@@ -260,7 +258,7 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <!-- Under construction group -->
+    <!-- Under construction buttons -->
     <div id="under-construction-group">
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Shop page update!">Shop</div>
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Downloads page update!">Downloads</div>
@@ -269,12 +267,11 @@ canvas {
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
     </div>
 
-    <!-- Fully functional upright heart-shaped Donate button -->
+    <!-- Proper heart Donate button -->
     <a href="https://www.paypal.me/JohnBender612" id="donate" target="_blank" rel="noopener noreferrer">
-      Donate
+      <span>Donate</span>
     </a>
 
-    <!-- Gentle, non-pressuring text near Donate -->
     <div id="donate-note">
       If you’d like to support what we’re building, we truly appreciate it.
     </div>
