@@ -137,27 +137,27 @@ canvas {
   background: linear-gradient(135deg, rgba(220,70,100,1), rgba(180,30,70,1)); /* richer gradient */
   transform: rotate(-45deg);
   cursor: pointer;
-  z-index: 10200; /* forward pop */
+  z-index: 10200;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Heart top lobes */
+/* Top lobes slightly smaller to avoid overlapping text */
 #donate::before,
 #donate::after {
   content: "";
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background: linear-gradient(135deg, rgba(220,70,100,1), rgba(180,30,70,1));
   border-radius: 50%;
 }
 
-#donate::before { top: -30px; left: 0; }
-#donate::after { top: 0; left: 30px; }
+#donate::before { top: -25px; left: 0; }
+#donate::after { top: 0; left: 25px; }
 
-/* Rotate text back upright and bring slightly forward */
+/* Text rotated upright and nudged forward */
 #donate span { 
   transform: rotate(45deg) translateZ(4px);
   display: block;
@@ -165,7 +165,7 @@ canvas {
   font-weight: bold;
   font-size: 14px;
   text-align: center;
-  text-shadow: 0 0 6px rgba(255,255,255,0.4); /* subtle glow for depth */
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
 
 /* Gentle, non-pressuring text near Donate */
@@ -201,7 +201,7 @@ canvas {
 /* ===== FEEDBACK FORM ===== */
 #feedback-container {
   position: absolute;
-  bottom: 90px;
+  top: 500px; /* below heart & under-construction message */
   left: 50%;
   transform: translateX(-50%);
   width: 400px;
@@ -241,8 +241,9 @@ canvas {
 /* ===== PAGE VIEW COUNTER ===== */
 #page-counter {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   color: rgba(160, 200, 235,0.85);
   font-size: 14px;
   text-shadow: 0 0 4px rgba(80, 140, 200,0.25);
@@ -347,7 +348,6 @@ localStorage.setItem('visitorCount', count);
 document.getElementById('visitor-count').textContent = count;
 
 /* ===== ORBIT REMOVED ===== */
-// Buttons are static; positions handled in CSS
 </script>
 
 </body>
