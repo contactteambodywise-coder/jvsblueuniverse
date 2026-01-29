@@ -74,64 +74,70 @@ window.addEventListener("resize", () => { w = canvas.width = window.innerWidth; 
 
 
 
-/**********************************************************************
-========================= BEGIN UFO FEATURE =========================
-========================= PLAYGROUND BIG UFO VERSION =================
-**********************************************************************/
 
-// Array to hold UFOs
-let ufos = [];
+<!-- **********************************************************************
+========================= BEGIN PLAYGROUND FIREBALL =========================
+********************************************************************** -->
+<script>
+// Fireball Array
+let fireballs = [];
 
-// UFO spawn function (100% chance)
-function spawnUFO() {
-  const z = Math.random() * 0.5 + 0.5; // depth effect (0.5-1)
-  ufos.push({
-    x: Math.random() * w,               // random horizontal start
-    y: Math.random() * h * 0.5,         // upper half of screen
-    vx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1), // horizontal speed
-    vy: (Math.random() * 0.5 - 0.25),   // slight vertical drift
+// Spawn Fireball Function
+function spawnFireball() {
+  const z = Math.random()*0.8 + 0.2;
+  fireballs.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    vx: (Math.random()*12 - 6) * z,
+    vy: (Math.random()*12 - 6) * z,
     z: z,
-    size: 200 + Math.random() * 60,      // BIG size for playground
-    alpha: 0.9
+    width: Math.random()*2 + 2,
+    color: "255,100,30" // bright orange-red fireball
   });
 }
 
-// Spawn a UFO every 1 second for playground visibility
-setInterval(spawnUFO, 1000); // adjust as needed
+// Spawn fireballs every interval with guaranteed spawn
+const fireballQuantity = 5; // adjust how many fireballs spawn each interval
+setInterval(() => {
+  for(let i=0; i<fireballQuantity; i++) spawnFireball();
+}, 2000); // adjust interval (ms) to control frequency
 
-// UFO draw function (call inside main draw loop)
-function drawUFOs() {
-  ufos.forEach((ufo, i) => {
-    const scale = ufo.z;
-    ctx.globalAlpha = ufo.alpha * scale;
-
-    // Draw UFO body (big ellipse with dome)
-    ctx.fillStyle = `rgba(180, 255, 255, ${0.8 * scale})`;
+// Draw Fireballs
+function drawFireballs() {
+  fireballs.forEach((f, i) => {
+    const tailLength = 40 * f.z;
+    const grad = ctx.createLinearGradient(f.x, f.y, f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    grad.addColorStop(0, `rgba(${f.color}, ${0.9*f.z})`);
+    grad.addColorStop(0.3, `rgba(${f.color}, ${0.5*f.z})`);
+    grad.addColorStop(1, `rgba(${f.color}, 0)`);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = f.width * f.z;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.ellipse(ufo.x, ufo.y, ufo.size * scale, ufo.size * 0.4 * scale, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(f.x,f.y);
+    ctx.lineTo(f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    ctx.stroke();
 
-    // Draw dome
-    ctx.fillStyle = `rgba(200, 255, 255, ${0.6 * scale})`;
-    ctx.beginPath();
-    ctx.ellipse(ufo.x, ufo.y - ufo.size * 0.15 * scale, ufo.size * 0.6 * scale, ufo.size * 0.2 * scale, 0, 0, Math.PI);
-    ctx.fill();
+    // Move fireball
+    f.x += f.vx;
+    f.y += f.vy;
 
-    // Update position
-    ufo.x += ufo.vx;
-    ufo.y += ufo.vy;
-
-    // Remove if offscreen
-    if (ufo.x < -100 || ufo.x > w + 100 || ufo.y < -100 || ufo.y > h + 100) {
-      ufos.splice(i, 1);
-    }
+    // Remove if off screen
+    if(f.x < -200 || f.x > w+200 || f.y < -200 || f.y > h+200) fireballs.splice(i,1);
   });
-  ctx.globalAlpha = 1; // reset alpha after drawing
 }
 
-/**********************************************************************
-========================= END UFO FEATURE =========================
-**********************************************************************/
+// Integrate into main draw loop
+const originalDraw = draw;
+draw = function() {
+  originalDraw();
+  drawFireballs();
+}
+</script>
+<!-- **********************************************************************
+========================= END PLAYGROUND FIREBALL =========================
+********************************************************************** -->
+
 
 
 
