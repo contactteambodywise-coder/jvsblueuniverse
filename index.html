@@ -78,9 +78,9 @@ function drawStars() {
       star.y = Math.random() * height - height/2;
     }
 
-    // Mouse & tilt influence reduced to half of last value (now 25)
-    const sx = (star.x + pointer.x*25 + tilt.x*25) * (focalLength / star.z) + width/2;
-    const sy = (star.y + pointer.y*25 + tilt.y*25) * (focalLength / star.z) + height/2;
+    // Mouse influence slowed to half (12.5), tilt still 25
+    const sx = (star.x + pointer.x*12.5 + tilt.x*25) * (focalLength / star.z) + width/2;
+    const sy = (star.y + pointer.y*12.5 + tilt.y*25) * (focalLength / star.z) + height/2;
     const radius = star.size * (focalLength / star.z);
 
     ctx.beginPath();
