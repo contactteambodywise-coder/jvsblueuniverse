@@ -40,7 +40,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 /* ===== STARFIELD DATA ===== */
-const numStars = 500; // updated star count
+const numStars = 500; // star count
 const stars = [];
 
 for (let i = 0; i < numStars; i++) {
@@ -48,7 +48,7 @@ for (let i = 0; i < numStars; i++) {
     x: Math.random() * width - width/2,
     y: Math.random() * height - height/2,
     z: Math.random() * width,
-    size: Math.random() * 1.5 + 0.5 // star size unchanged
+    size: Math.random() * 1.5 + 0.5 // star size 0.5 → 2
   });
 }
 
@@ -76,8 +76,9 @@ function drawStars() {
   const focalLength = width / 2;
 
   stars.forEach(star => {
-    // Move star forward slightly
-    star.z -= 1; // updated star speed
+    // Star speed = 0, no forward movement
+    // star.z -= 0; // no movement
+
     if (star.z <= 0) {
       star.z = width;
       star.x = Math.random() * width - width/2;
