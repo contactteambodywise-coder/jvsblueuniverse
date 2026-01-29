@@ -2,50 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - Wormhole Button</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J&V Blue Universe – Starter</title>
 <style>
+/* =========================
+   FULLSCREEN CANVAS STYLING
+   ========================= */
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: sans-serif;
 }
 
-/* Wormhole button styling */
-#wormholeButton {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #0ff, #00f, #000);
-  box-shadow: 0 0 50px #0ff, 0 0 100px #00f inset;
-  border: 2px solid #0ff;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-/* Hover effect for 3D feel */
-#wormholeButton:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 80px #0ff, 0 0 150px #00f inset;
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 </style>
 </head>
+
 <body>
 
-<!-- Wormhole button -->
-<div id="wormholeButton"></div>
+<canvas id="space"></canvas>
 
 <script>
-// Wormhole button click event
-const wormhole = document.getElementById("wormholeButton");
-wormhole.addEventListener("click", () => {
-  alert("Wormhole activated! 🚀");
-});
+/* =========================
+   CLEAN SLATE JS
+   ========================= */
+const canvas = document.getElementById('space');
+const ctx = canvas.getContext('2d');
+
+/* Resize canvas to full viewport */
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+/* =========================
+   PLACE YOUR VARIABLES HERE
+   ========================= */
+let elements = []; // Example: array for stars, worms, anything
+
+/* =========================
+   INITIALIZE ELEMENTS
+   ========================= */
+function init() {
+  elements = [];
+  // Example: elements.push({x:0,y:0})
+}
+
+/* =========================
+   MAIN LOOP
+   ========================= */
+function draw() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Example: draw elements here
+  for (let el of elements) {
+    // ctx.fillStyle = 'white';
+    // ctx.fillRect(el.x, el.y, 2, 2);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+/* =========================
+   START
+   ========================= */
+init();
+draw();
 </script>
 
 </body>
