@@ -2,81 +2,155 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J&V Blue Universe – Starter</title>
+<title>Starfield Home</title>
 <style>
-/* =========================
-   FULLSCREEN CANVAS STYLING
-   ========================= */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: black;
-}
-
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: black;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 </style>
 </head>
-
 <body>
 
 <canvas id="space"></canvas>
 
 <script>
-/* =========================
-   CLEAN SLATE JS
-   ========================= */
-const canvas = document.getElementById('space');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
 
-/* Resize canvas to full viewport */
+let w, h;
 function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
 }
-window.addEventListener('resize', resize);
+window.addEventListener("resize", resize);
 resize();
 
-/* =========================
-   PLACE YOUR VARIABLES HERE
-   ========================= */
-let elements = []; // Example: array for stars, worms, anything
+// Cheat sheet numbers
+const starCount = 800;
+const minSize = 0.5;
+const maxSize = 2;
+const speedBase = 0.2;
+const mouseInteract = 100;
+const tiltInteract = 100;
+const depthMin = 0.2;
+const depthMax = 1;
+const alphaMin = 0.2;
+const alphaMax = 1;
+const shootingSpawnRate = 0.01;
+const shootingTrail = 30;
+const shootingColor = "255,255,255";
+const layersCount = 3;
+const layerSpeedMultipliers = [0.8, 1, 1.2];
+const sizeVariation = 0.3;
+const brightnessVariation = 0.25;
+const driftSpeed = 0.01;
 
-/* =========================
-   INITIALIZE ELEMENTS
-   ========================= */
-function init() {
-  elements = [];
-  // Example: elements.push({x:0,y:0})
+// Track mouse & tilt
+let mx = 0, my = 0;
+window.addEventListener("mousemove", e => {
+  mx = (e.clientX - w/2)/w*mouseInteract;
+  my = (e.clientY - h/2)/h*mouseInteract;
+});
+window.addEventListener("deviceorientation", e => {
+  mx = (e.gamma||0)/45*tiltInteract;
+  my = (e.beta||0)/45*tiltInteract;
+});
+
+// Star class
+class Star {
+  constructor(layer) {
+    this.layer = layer;
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random()*w;
+    this.y = Math.random()*h;
+    this.z = Math.random()*(depthMax-depthMin)+depthMin;
+    this.size = Math.random()*(maxSize-minSize)+minSize;
+    this.alpha = Math.random()*(alphaMax-alphaMin)+alphaMin;
+  }
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x+mx*this.z, this.y+my*this.z, this.size, 0, Math.PI*2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  update() {
+    this.y += speedBase*layerSpeedMultipliers[this.layer-1];
+    this.y += driftSpeed;
+    if (this.y > h) this.y = 0;
+  }
 }
 
-/* =========================
-   MAIN LOOP
-   ========================= */
-function draw() {
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Example: draw elements here
-  for (let el of elements) {
-    // ctx.fillStyle = 'white';
-    // ctx.fillRect(el.x, el.y, 2, 2);
+// Shooting Star class
+class ShootingStar {
+  constructor() {
+    this.x = Math.random()*w;
+    this.y = Math.random()*h;
+    this.vx = (Math.random()*10-5)*0.5;
+    this.vy = (Math.random()*10-5)*0.5;
+    this.length = shootingTrail;
   }
+  draw() {
+    const grad = ctx.createLinearGradient(this.x,this.y,this.x-this.vx*this.length,this.y-this.vy*this.length);
+    grad.addColorStop(0, `rgba(${shootingColor},1)`);
+    grad.addColorStop(1, `rgba(${shootingColor},0)`);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(this.x,this.y);
+    ctx.lineTo(this.x-this.vx*this.length,this.y-this.vy*this.length);
+    ctx.stroke();
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+}
 
+// Initialize layers of stars
+const stars = [];
+for (let l=1;l<=layersCount;l++) {
+  for (let i=0;i<Math.floor(starCount/layersCount);i++) {
+    stars.push(new Star(l));
+  }
+}
+
+let shootingStars = [];
+
+function spawnShootingStar() {
+  if (Math.random() < shootingSpawnRate) shootingStars.push(new ShootingStar());
+}
+
+// Draw loop
+function draw() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,w,h);
+
+  stars.forEach(s => { s.update(); s.draw(); });
+
+  shootingStars.forEach((s,i) => {
+    s.update();
+    s.draw();
+    if (s.x<-50 || s.x>w+50 || s.y<-50 || s.y>h+50) shootingStars.splice(i,1);
+  });
+
+  spawnShootingStar();
   requestAnimationFrame(draw);
 }
 
-/* =========================
-   START
-   ========================= */
-init();
 draw();
 </script>
 
