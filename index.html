@@ -25,7 +25,6 @@ canvas {
 <canvas id="space"></canvas>
 
 <script>
-/* ===== CANVAS SETUP ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
@@ -39,8 +38,7 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-/* ===== STARFIELD DATA ===== */
-const numStars = 500; // star count
+const numStars = 500;
 const stars = [];
 
 for (let i = 0; i < numStars; i++) {
@@ -48,27 +46,23 @@ for (let i = 0; i < numStars; i++) {
     x: Math.random() * width - width/2,
     y: Math.random() * height - height/2,
     z: Math.random() * width,
-    size: Math.random() * 1.5 + 0.5 // star size 0.5 → 2
+    size: Math.random() * 1.5 + 0.5
   });
 }
 
-/* ===== INTERACTION ===== */
 const pointer = { x: 0, y: 0 };
 let tilt = { x: 0, y: 0 };
 
-// Mouse interaction
 window.addEventListener("mousemove", e => {
-  pointer.x = (e.clientX - width/2) / width * 2; // normalized
+  pointer.x = (e.clientX - width/2) / width * 2;
   pointer.y = (e.clientY - height/2) / height * 2;
 });
 
-// Mobile tilt interaction
 window.addEventListener("deviceorientation", e => {
-  tilt.x = e.gamma ? e.gamma / 30 : 0; // normalized
+  tilt.x = e.gamma ? e.gamma / 30 : 0;
   tilt.y = e.beta ? e.beta / 30 : 0;
 });
 
-/* ===== DRAW LOOP ===== */
 function drawStars() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
@@ -76,8 +70,7 @@ function drawStars() {
   const focalLength = width / 2;
 
   stars.forEach(star => {
-    // Star speed = 0, no forward movement
-    // star.z -= 0; // no movement
+    // Star speed is 0, no forward movement
 
     if (star.z <= 0) {
       star.z = width;
@@ -85,10 +78,9 @@ function drawStars() {
       star.y = Math.random() * height - height/2;
     }
 
-    // 3D projection with interaction
-    const sx = (star.x + pointer.x*100 + tilt.x*100) * (focalLength / star.z) + width/2;
-    const sy = (star.y + pointer.y*100 + tilt.y*100) * (focalLength / star.z) + height/2;
-
+    // Mouse & tilt influence reduced to half
+    const sx = (star.x + pointer.x*50 + tilt.x*50) * (focalLength / star.z) + width/2;
+    const sy = (star.y + pointer.y*50 + tilt.y*50) * (focalLength / star.z) + height/2;
     const radius = star.size * (focalLength / star.z);
 
     ctx.beginPath();
@@ -100,7 +92,6 @@ function drawStars() {
   requestAnimationFrame(drawStars);
 }
 
-/* ===== START ANIMATION ===== */
 drawStars();
 </script>
 
