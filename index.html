@@ -62,7 +62,6 @@ function spawnShootingStar() {
     color: "255,255,255"
   });
 }
-
 setInterval(() => { if(Math.random()<0.01) spawnShootingStar(); }, 50);
 
 /* ===== COSMIC WORM ===== */
@@ -71,7 +70,7 @@ const worm = {
   y: Math.random()*h,
   size: 40 + Math.random()*30,
   color: "rgba(0,150,255,0.9)",
-  mist: "rgba(255,255,100,0.2)",
+  mistColor: "rgba(255,255,100,0.3)",
   vx: (Math.random()-0.5)*1.5,
   vy: (Math.random()-0.5)*1.5
 };
@@ -108,34 +107,42 @@ function drawShootingStars() {
 }
 
 function drawWorm() {
-  // Body
+  // Radial gradient for yellow mist trail
+  const grad = ctx.createRadialGradient(worm.x, worm.y, 0, worm.x, worm.y, worm.size*2);
+  grad.addColorStop(0, worm.color);
+  grad.addColorStop(0.6, worm.mistColor);
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  
+  ctx.beginPath();
+  ctx.arc(worm.x, worm.y, worm.size*2, 0, Math.PI*2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Core circle
   ctx.beginPath();
   ctx.arc(worm.x, worm.y, worm.size, 0, Math.PI*2);
   ctx.fillStyle = worm.color;
   ctx.fill();
-
-  // Yellow mist trail
-  ctx.beginPath();
-  ctx.arc(worm.x, worm.y, worm.size*1.5, 0, Math.PI*2);
-  ctx.fillStyle = worm.mist;
-  ctx.fill();
 }
 
 function updateWorm() {
-  worm.x += worm.vx;
-  worm.y += worm.vy;
-
-  // Bounce edges
-  if(worm.x < 0 || worm.x > w) worm.vx *= -1;
-  if(worm.y < 0 || worm.y > h) worm.vy *= -1;
-
-  // Wiggle
+  // Wiggle motion
   worm.vx += (Math.random()-0.5)*0.2;
   worm.vy += (Math.random()-0.5)*0.2;
 
   // Clamp speed
   worm.vx = Math.max(Math.min(worm.vx,1.5),-1.5);
   worm.vy = Math.max(Math.min(worm.vy,1.5),-1.5);
+
+  // Move
+  worm.x += worm.vx;
+  worm.y += worm.vy;
+
+  // Bounce edges
+  if(worm.x < 0) { worm.x = 0; worm.vx *= -1; }
+  if(worm.x > w) { worm.x = w; worm.vx *= -1; }
+  if(worm.y < 0) { worm.y = 0; worm.vy *= -1; }
+  if(worm.y > h) { worm.y = h; worm.vy *= -1; }
 }
 
 /* ===== ANIMATION LOOP ===== */
