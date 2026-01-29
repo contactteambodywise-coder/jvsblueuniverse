@@ -66,14 +66,19 @@ setInterval(() => { if(Math.random()<0.01) spawnShootingStar(); }, 50);
 
 /* ===== COSMIC WORM ===== */
 const worm = {
-  x: Math.random()*w,
-  y: Math.random()*h,
-  size: 40 + Math.random()*30,
+  segments: 10,
+  positions: [],
+  size: 30,
   color: "rgba(0,150,255,0.9)",
   mistColor: "rgba(255,255,100,0.3)",
   vx: (Math.random()-0.5)*1.5,
   vy: (Math.random()-0.5)*1.5
 };
+
+// Initialize worm positions
+for(let i=0;i<worm.segments;i++){
+  worm.positions.push({x: w/2, y: h/2});
+}
 
 /* ===== DRAW FUNCTIONS ===== */
 function drawStars() {
@@ -107,42 +112,50 @@ function drawShootingStars() {
 }
 
 function drawWorm() {
-  // Radial gradient for yellow mist trail
-  const grad = ctx.createRadialGradient(worm.x, worm.y, 0, worm.x, worm.y, worm.size*2);
-  grad.addColorStop(0, worm.color);
-  grad.addColorStop(0.6, worm.mistColor);
-  grad.addColorStop(1, "rgba(0,0,0,0)");
-  
-  ctx.beginPath();
-  ctx.arc(worm.x, worm.y, worm.size*2, 0, Math.PI*2);
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // Core circle
-  ctx.beginPath();
-  ctx.arc(worm.x, worm.y, worm.size, 0, Math.PI*2);
-  ctx.fillStyle = worm.color;
-  ctx.fill();
+  for(let i=0;i<worm.segments;i++){
+    const pos = worm.positions[i];
+    const radius = worm.size*(1 - i*0.08);
+    const alpha = 1 - i*0.08;
+    
+    const grad = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,radius*2);
+    grad.addColorStop(0, worm.color);
+    grad.addColorStop(0.5, worm.mistColor);
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    
+    ctx.beginPath();
+    ctx.arc(pos.x,pos.y,radius*2,0,Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.arc(pos.x,pos.y,radius,0,Math.PI*2);
+    ctx.fillStyle = worm.color;
+    ctx.fill();
+  }
 }
 
 function updateWorm() {
-  // Wiggle motion
-  worm.vx += (Math.random()-0.5)*0.2;
-  worm.vy += (Math.random()-0.5)*0.2;
-
-  // Clamp speed
+  // Move head
+  let head = worm.positions[0];
+  worm.vx += (Math.random()-0.5)*0.3;
+  worm.vy += (Math.random()-0.5)*0.3;
   worm.vx = Math.max(Math.min(worm.vx,1.5),-1.5);
   worm.vy = Math.max(Math.min(worm.vy,1.5),-1.5);
-
-  // Move
-  worm.x += worm.vx;
-  worm.y += worm.vy;
-
-  // Bounce edges
-  if(worm.x < 0) { worm.x = 0; worm.vx *= -1; }
-  if(worm.x > w) { worm.x = w; worm.vx *= -1; }
-  if(worm.y < 0) { worm.y = 0; worm.vy *= -1; }
-  if(worm.y > h) { worm.y = h; worm.vy *= -1; }
+  head.x += worm.vx;
+  head.y += worm.vy;
+  
+  if(head.x < 0){ head.x=0; worm.vx*=-1; }
+  if(head.x > w){ head.x=w; worm.vx*=-1; }
+  if(head.y < 0){ head.y=0; worm.vy*=-1; }
+  if(head.y > h){ head.y=h; worm.vy*=-1; }
+  
+  // Update segments to follow previous segment
+  for(let i=1;i<worm.segments;i++){
+    let prev = worm.positions[i-1];
+    let cur = worm.positions[i];
+    cur.x += (prev.x - cur.x)*0.2;
+    cur.y += (prev.y - cur.y)*0.2;
+  }
 }
 
 /* ===== ANIMATION LOOP ===== */
