@@ -137,25 +137,9 @@ function drawUFOs() {
 
 
 
-/**********************************************************************
-========================= BEGIN AUTO REFRESH =========================
-========================= PLAYGROUND ONLY ===========================
-**********************************************************************/
-
-// Auto-refresh playground every 5 seconds (adjust as needed)
-setInterval(() => {
-  console.log("Playground auto-refresh triggered");
-  location.reload();
-}
-
-/**********************************************************************
-========================= END AUTO REFRESH ===========================
-**********************************************************************/
 
 
-
-
-<!-- ========================= PLAYGROUND REFRESH CONTROLLER ========================= -->
+<!-- ========================= PLAYGROUND AUTO-REFRESH + INPUT BOX ========================= -->
 <div id="refresh-controller" style="
   position: fixed;
   top: 10px;
@@ -163,9 +147,9 @@ setInterval(() => {
   background: rgba(0,0,0,0.6);
   color: #70c2ff;
   padding: 10px;
-  border-radius: 20px;
+  border-radius: 10px;
   font-family: 'Segoe UI', sans-serif;
-  z-index: 1000;
+  z-index: 9999;
   user-select: none;
 ">
   <label for="refresh-input" style="font-weight:bold; margin-right:5px;">Refresh (ms):</label>
@@ -182,32 +166,35 @@ setInterval(() => {
 
 <script>
 /**********************************************************************
-========================= PLAYGROUND AUTO-REFRESH INPUT =========================
+========================= PLAYGROUND AUTO-REFRESH =========================
 **********************************************************************/
 
-let refreshInterval = 5000; // default 5 seconds
-let refreshTimer = setInterval(() => location.reload(), refreshInterval);
+// Default refresh interval
+let refreshInterval = 5000; // 5 seconds
+let refreshTimer = setInterval(() => {
+  console.log("Playground auto-refresh triggered");
+  location.reload();
+}, refreshInterval);
 
-// Grab the input box
+// Grab input element
 const refreshInput = document.getElementById('refresh-input');
 
-// Listen for changes
+// Update refresh interval on the fly
 refreshInput.addEventListener('input', () => {
   const val = parseInt(refreshInput.value);
   if (!isNaN(val) && val > 0) {
-    // Clear old interval
+    // Clear previous timer
     clearInterval(refreshTimer);
     refreshInterval = val;
-    // Set new interval
-    refreshTimer = setInterval(() => location.reload(), refreshInterval);
-    console.log(`Playground refresh interval updated: ${refreshInterval}ms`);
+    // Set new timer
+    refreshTimer = setInterval(() => {
+      console.log("Playground auto-refresh triggered");
+      location.reload();
+    }, refreshInterval);
+    console.log(`Refresh interval updated: ${refreshInterval}ms`);
   }
 });
 </script>
-
-
-
-
 
 
 
