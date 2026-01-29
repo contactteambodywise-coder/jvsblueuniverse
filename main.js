@@ -15,6 +15,18 @@ function resizeCanvas() {
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr);
+}
+
+// Run resize after slight delay for mobile
+setTimeout(resizeCanvas, 50);
+
+window.addEventListener("resize", resizeCanvas);
 
 /* ===== 2️⃣ STARS SETUP ===== */
 const stars = Array.from({ length: 300 }, () => ({
@@ -34,6 +46,12 @@ function drawStars() {
   });
   ctx.globalAlpha = 1;
 }
+window.addEventListener("touchmove", e => {
+  e.preventDefault(); // stops scrolling
+  pointer.x = e.touches[0].clientX;
+  pointer.y = e.touches[0].clientY;
+}, { passive: false });
+
 
 /* ===== 3️⃣ WORM SETUP ===== */
 const worm = {
