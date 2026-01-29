@@ -200,6 +200,68 @@ let shootingStars=[];
 function spawnShootingStar(){ const z=Math.random()*0.8+0.2; const fireball=Math.random()<0.01; shootingStars.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()*10-5)*z, vy:(Math.random()*10-5)*z, z, fireball, width:fireball?Math.random()*2+4:Math.random()*1.2+1.4, color: fireball?"255,180,80":"255,255,255"}); }
 setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 
+/* ===== UFOS ===== */
+const ufos = [];
+const UFO_COUNT = 3;
+const UFO_SIZE = 90;
+for(let i=0;i<UFO_COUNT;i++){
+  ufos.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    vx: (Math.random()*0.6+0.3),
+    vy: Math.sin(Math.random())*0.4,
+    phase: Math.random()*Math.PI*2,
+    size: UFO_SIZE
+  });
+}
+
+/* ===== COSMIC WORM ===== */
+const worms = [];
+const WORM_COUNT = 2;
+const WORM_LENGTH = 180;
+for(let i=0;i<WORM_COUNT;i++){
+  worms.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    angle: Math.random()*Math.PI*2,
+    speed: Math.random()*0.8+0.2,
+    size: 18,
+    phase: Math.random()*Math.PI*2
+  });
+})
+
+function drawUFO(ufo){
+  ctx.save();
+  ctx.translate(ufo.x,ufo.y);
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = "rgba(120,200,255,0.8)";
+  ctx.fillStyle="#9fdcff";
+  ctx.beginPath(); ctx.ellipse(0,0,ufo.size,ufo.size*0.35,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="rgba(180,220,255,0.9)";
+  ctx.beginPath(); ctx.ellipse(0,-ufo.size*0.2,ufo.size*0.4,ufo.size*0.3,0,0,Math.PI*2); ctx.fill();
+  for(let i=-2;i<=2;i++){
+    ctx.fillStyle=`rgba(255,255,200,${0.6+Math.random()*0.4})`;
+    ctx.beginPath(); ctx.arc(i*(ufo.size*0.3),ufo.size*0.15,6,0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawWorm(w){
+  ctx.save();
+  ctx.translate(w.x,w.y);
+  ctx.rotate(Math.sin(w.phase)*0.5);
+  for(let i=0;i<10;i++){
+    const hue = (200+i*10)%360;
+    ctx.fillStyle=`hsla(${hue},80%,60%,0.7)`;
+    const dx = Math.cos(w.angle+i*0.15)*w.size*1.2;
+    const dy = Math.sin(w.angle+i*0.15)*w.size*0.8;
+    ctx.beginPath();
+    ctx.ellipse(dx, dy, w.size*0.6, w.size*0.4, w.angle+i*0.1, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 function draw(){
   ctx.clearRect(0,0,w,h);
   ctx.globalCompositeOperation="screen";
@@ -248,7 +310,7 @@ function draw(){
     if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1);
   });
 
-  // ===== UFOS (15% chance per frame) =====
+  // ===== UFOS =====
   ufos.forEach(ufo=>{
     if(Math.random()<0.15){
       ufo.phase += 0.02;
@@ -259,41 +321,23 @@ function draw(){
     }
   });
 
+  // ===== COSMIC WORM =====
+  worms.forEach(w=>{
+    if(Math.random()<0.05){ // rare
+      w.phase += 0.03;
+      w.x += Math.cos(w.angle)*w.speed;
+      w.y += Math.sin(w.angle)*w.speed;
+      if(w.x<-w.size) w.x=w+ w.size;
+      if(w.x>w+w.size) w.x=-w.size;
+      if(w.y<-w.size) w.y=h+w.size;
+      if(w.y>h+w.size) w.y=-w.size;
+      drawWorm(w);
+    }
+  });
+
   requestAnimationFrame(draw);
 }
 draw();
-
-/* ===== UFO DATA ===== */
-const ufos = [];
-const UFO_COUNT = 3;
-const UFO_SIZE = 90;
-
-for(let i=0;i<UFO_COUNT;i++){
-  ufos.push({
-    x: Math.random()*w,
-    y: Math.random()*h,
-    vx: (Math.random()*0.6+0.3),
-    vy: Math.sin(Math.random())*0.4,
-    phase: Math.random()*Math.PI*2,
-    size: UFO_SIZE
-  });
-}
-
-function drawUFO(ufo){
-  ctx.save();
-  ctx.translate(ufo.x,ufo.y);
-  ctx.shadowBlur = 30;
-  ctx.shadowColor = "rgba(120,200,255,0.8)";
-  ctx.fillStyle="#9fdcff";
-  ctx.beginPath(); ctx.ellipse(0,0,ufo.size,ufo.size*0.35,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="rgba(180,220,255,0.9)";
-  ctx.beginPath(); ctx.ellipse(0,-ufo.size*0.2,ufo.size*0.4,ufo.size*0.3,0,0,Math.PI*2); ctx.fill();
-  for(let i=-2;i<=2;i++){
-    ctx.fillStyle=`rgba(255,255,200,${0.6+Math.random()*0.4})`;
-    ctx.beginPath(); ctx.arc(i*(ufo.size*0.3),ufo.size*0.15,6,0,Math.PI*2); ctx.fill();
-  }
-  ctx.restore();
-}
 
 /* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
@@ -328,25 +372,4 @@ buttonData.forEach(data=>{
 
 function animateButtons(){
   buttonData.forEach(data=>{
-    const btn=document.getElementById(data.id);
-    if(paused) return;
-    let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
-    const rad=angle*Math.PI/180;
-    const distance=parseFloat(btn.dataset.distance);
-    const stretchX=parseFloat(btn.dataset.stretchX);
-    const stretchY=parseFloat(btn.dataset.stretchY);
-    const x=Math.cos(rad)*distance*stretchX;
-    const y=Math.sin(rad)*distance*stretchY;
-    btn.style.transform=`translate(${x}px, ${y}px)`;
-  });
-  requestAnimationFrame(animateButtons);
-}
-animateButtons();
-
-</script>
-</body>
-</html>
+    const btn
