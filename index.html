@@ -66,11 +66,11 @@ setInterval(() => { if(Math.random()<0.01) spawnShootingStar(); }, 50);
 
 /* ===== COSMIC WORM ===== */
 const worm = {
-  segments: 10,
+  segments: 25, // more segments for longer worm
   positions: [],
-  size: 30,
+  size: 15, // thinner body
   color: "rgba(0,150,255,0.9)",
-  mistColor: "rgba(255,255,100,0.3)",
+  mistColor: "rgba(255,255,100,0.25)",
   vx: (Math.random()-0.5)*1.5,
   vy: (Math.random()-0.5)*1.5
 };
@@ -114,8 +114,8 @@ function drawShootingStars() {
 function drawWorm() {
   for(let i=0;i<worm.segments;i++){
     const pos = worm.positions[i];
-    const radius = worm.size*(1 - i*0.08);
-    const alpha = 1 - i*0.08;
+    const radius = worm.size*(1 - i*0.04); // segments gradually smaller
+    const alpha = 1 - i*0.04;
     
     const grad = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,radius*2);
     grad.addColorStop(0, worm.color);
