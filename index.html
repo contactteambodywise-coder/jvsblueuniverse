@@ -137,29 +137,36 @@ canvas {
   height: 90px;
   background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
   cursor: pointer;
-  text-indent: -9999px; /* hides text in center */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
   z-index: 10150;
+  position: relative;
 }
 
-/* Create heart shape with pseudo-elements */
+/* Heart top bumps */
 #donate::before,
 #donate::after {
   content: "";
   position: absolute;
-  width: 100px;
-  height: 90px;
+  width: 50px;
+  height: 80px;
   background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
   border-radius: 50%;
 }
 
 #donate::before {
-  top: -50px;
+  top: -40px;
   left: 0;
 }
 
 #donate::after {
-  left: 50px;
-  top: 0;
+  top: -40px;
+  right: 0;
 }
 
 /* Gentle, non-pressuring text near Donate */
@@ -262,14 +269,8 @@ canvas {
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
     </div>
 
-    <!-- Fully functional heart-shaped Donate button -->
-    <a
-      href="https://www.paypal.me/JohnBender612"
-      class="cosmic-btn"
-      id="donate"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <!-- Fully functional upright heart-shaped Donate button -->
+    <a href="https://www.paypal.me/JohnBender612" id="donate" target="_blank" rel="noopener noreferrer">
       Donate
     </a>
 
