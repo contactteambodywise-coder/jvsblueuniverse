@@ -132,8 +132,8 @@ canvas {
   position: absolute;
   top: 300px;
   left: calc(50% + 400px);
-  width: 80px;
-  height: 40px;
+  width: 120px;  /* increased width */
+  height: 50px;  /* increased height */
   background: linear-gradient(135deg, rgba(220,70,100,1), rgba(180,30,70,1));
   cursor: pointer;
   z-index: 10200;
@@ -147,7 +147,7 @@ canvas {
 #donate span {
   color: #fff;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px; /* slightly larger */
   text-align: center;
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
@@ -155,10 +155,10 @@ canvas {
 /* Gentle, non-pressuring text under Donate, original placement */
 #donate-note {
   position: absolute;
-  top: 355px; /* evenly below the Donate button */
+  top: 360px; /* slightly lower for bigger button */
   left: calc(50% + 400px);
   transform: translateX(-50%);
-  font-size: 15px;
+  font-size: 16px;
   color: rgba(160,200,235,0.85);
   text-align: center;
   font-style: italic;
@@ -180,32 +180,6 @@ canvas {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(79,179,255,0.4);
   z-index: 10200;
   pointer-events: none;
-}
-
-/* ===== FEEDBACK FORM (inputs removed) ===== */
-#feedback-container {
-  position: absolute;
-  top: 500px; /* below Donate & under-construction message */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 400px;
-  text-align: center;
-  color: #70c2ff;
-  z-index: 10250;
-}
-
-#feedback-form label {
-  display: block;
-  margin: 8px 0 4px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* Remove input and textarea entirely - coding gone */
-
-/* Submit button */
-#feedback-form button {
-  margin-top: 4px;
 }
 </style>
 </head>
@@ -243,18 +217,7 @@ canvas {
     The pages above are currently under construction, but exciting updates are on the way.
   </div>
 
-  <!-- Feedback form with inputs removed -->
-  <div id="feedback-container">
-    <form id="feedback-form" action="mailto:JohnBender612@example.com" method="POST" enctype="text/plain">
-      <label>Your Email (optional):</label>
-      <!-- input removed -->
-
-      <label>Your Thoughts:</label>
-      <!-- textarea removed -->
-
-      <button type="submit" class="cosmic-btn">Send Feedback</button>
-    </form>
-  </div>
+  <!-- Feedback form completely removed -->
 </div>
 
 <script>
