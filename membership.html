@@ -2,157 +2,119 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Playground Universe</title>
+<title>Playground – Control Box Test</title>
+
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
-    background: black; /* optional behind canvas */
-  }
+/* ===================== GLOBAL RESET ===================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
 
-  /* Canvas layer */
-  canvas {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    background: transparent; /* see-through */
-  }
+/* ===================== CANVAS ===================== */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
 
-  /* Refresh input box */
-  #refresh-controller {
-    position: fixed;
-    top: 3000px;
-    right: 3000px;
-    background: rgba(0,0,0,0.6);
-    color: #70c2ff;
-    padding: 20px;
-    border-radius: 10px;
-    font-family: 'Segoe UI', sans-serif;
-    z-index: 10000; /* sits above canvas */
-    user-select: none;
-  }
+/* =========================================================
+================== BEGIN CONTROL INPUT BOX =================
+========================================================= */
+#control-panel {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
 
-  #refresh-input {
-    width: 700px;
-    background: rgba(0,0,0,0.25);
-    border: 2px solid #70c2ff;
-    border-radius: 5px;
-    color: #70c2ff;
-    font-weight: bold;
-    text-align: center;
-  }
+  background: rgba(0, 0, 0, 0.85);
+  border: 3px solid #70c2ff;
+  border-radius: 12px;
+  padding: 18px 22px;
+
+  box-shadow:
+    0 0 15px rgba(112,194,255,0.7),
+    0 0 30px rgba(112,194,255,0.4);
+}
+
+#control-panel label {
+  display: block;
+  color: #70c2ff;
+  font-size: 22px; /* 👈 CHANGE THIS TO MAKE TEXT BIGGER */
+  margin-bottom: 10px;
+}
+
+#control-panel input {
+  width: 260px;
+  height: 48px;
+
+  font-size: 24px; /* 👈 THIS IS THE MAIN EYE-SAVER */
+  padding: 6px 10px;
+
+  color: #000;
+  background: #e8f4ff;
+
+  border: none;
+  border-radius: 8px;
+  outline: none;
+}
+/* =========================================================
+=================== END CONTROL INPUT BOX ==================
+========================================================= */
 </style>
 </head>
+
 <body>
 
 <canvas id="space"></canvas>
 
-<!-- Refresh Input Box -->
-<div id="refresh-controller">
-  <label for="refresh-input" style="font-weight:bold; margin-right:5px;">Refresh (ms):</label>
-  <input id="refresh-input" type="number" value="5000">
+<!-- ================= CONTROL PANEL ================= -->
+<div id="control-panel">
+  <label for="refreshInput">Refresher Value</label>
+  <input id="refreshInput" type="number" value="1000">
 </div>
 
 <script>
-/**********************************************************************
-========================= PLAYGROUND CANVAS + REFRESH =========================
-**********************************************************************/
-
-// ----- Canvas Setup -----
+/* ===================== CANVAS SETUP ===================== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 window.addEventListener("resize", resize);
 resize();
 
-// ----- Stars array -----
-const stars = Array.from({length:100}, ()=>({
-  x: Math.random()*w,
-  y: Math.random()*h,
-  r: Math.random()*2+1,
-  a: Math.random()
-}));
-
-// ----- Fireballs array (example) -----
-let fireballs = [];
-function spawnFireball() {
-  fireballs.push({
-    x: Math.random()*w,
-    y: Math.random()*h,
-    vx: (Math.random()*10-5),
-    vy: (Math.random()*10-5),
-    r: Math.random()*10+5,
-    color: "255,180,80"
-  });
-}
-// For testing, 100% chance spawn each frame
-setInterval(spawnFireball, 1000);
-
-// ----- Draw Loop -----
+/* ===================== BASIC DRAW LOOP ===================== */
 function draw() {
-  // Clear canvas each frame
-  ctx.clearRect(0, 0, w, h);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw stars
-  stars.forEach(s=>{
-    ctx.globalAlpha = s.a;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  });
-
-  // Draw fireballs
-  fireballs.forEach((f,i)=>{
-    const tail = f.r*2;
-    const grad = ctx.createLinearGradient(f.x, f.y, f.x-f.vx*tail, f.y-f.vy*tail);
-    grad.addColorStop(0, `rgba(${f.color},1)`);
-    grad.addColorStop(0.3, `rgba(${f.color},0.5)`);
-    grad.addColorStop(1, `rgba(${f.color},0)`);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = f.r;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(f.x,f.y);
-    ctx.lineTo(f.x-f.vx*tail,f.y-f.vy*tail);
-    ctx.stroke();
-
-    // Update position
-    f.x += f.vx;
-    f.y += f.vy;
-
-    // Remove if off screen
-    if(f.x<-200 || f.x>w+200 || f.y<-200 || f.y>h+200) fireballs.splice(i,1);
-  });
+  // simple visual so you KNOW canvas is alive
+  ctx.fillStyle = "rgba(112,194,255,0.15)";
+  ctx.beginPath();
+  ctx.arc(
+    canvas.width / 2,
+    canvas.height / 2,
+    120,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
 
   requestAnimationFrame(draw);
 }
 draw();
 
-// ----- Refresh Box -----
-let refreshInterval = 5000;
-let refreshTimer = setInterval(() => {
-  console.log("Playground auto-refresh triggered");
-  location.reload();
-}, refreshInterval);
-
-const refreshInput = document.getElementById('refresh-input');
-refreshInput.addEventListener('input', ()=>{
-  const val = parseInt(refreshInput.value);
-  if(!isNaN(val) && val>0){
-    clearInterval(refreshTimer);
-    refreshInterval = val;
-    refreshTimer = setInterval(()=>{
-      console.log("Playground auto-refresh triggered");
-      location.reload();
-    }, refreshInterval);
-    console.log(`Refresh interval updated: ${refreshInterval}ms`);
-  }
+/* ===================== INPUT TEST ===================== */
+const input = document.getElementById("refreshInput");
+input.addEventListener("input", () => {
+  console.log("Refresher value:", input.value);
 });
 </script>
 
