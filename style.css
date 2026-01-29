@@ -1,20 +1,15 @@
-/* ======================== */
-/*   BLUE UNIVERSE STARTER  */
-/* ======================== */
-
-/* ===== Full-page reset ===== */
 html, body {
   margin: 0;
   padding: 0;
+  background: black;
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  background: black; /* classic space background */
 }
 
-/* ===== Canvas styling ===== */
 canvas {
   display: block;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
 }
