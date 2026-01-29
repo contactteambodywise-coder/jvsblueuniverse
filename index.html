@@ -90,11 +90,11 @@ canvas {
 /* Group container to center under-construction buttons */
 #under-construction-group {
   position: absolute;
-  top: 300px; /* vertical placement under logo */
+  top: 300px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 20px; /* spacing between buttons */
+  gap: 20px;
 }
 
 /* Under construction buttons */
@@ -131,7 +131,7 @@ canvas {
 #donate {
   position: absolute;
   top: 300px;
-  left: calc(50% + 400px); /* keep original layout */
+  left: calc(50% + 400px);
   background: linear-gradient(
     135deg,
     rgba(70, 140, 200, 0.9),
@@ -152,10 +152,10 @@ canvas {
   cursor: pointer;
 }
 
-/* Optional gentle text below Donate button */
+/* Gentle, non-pressuring text below Donate */
 #donate-note {
   position: absolute;
-  top: 360px; /* near donate button, keep layout stable */
+  top: 360px;
   left: calc(50% + 400px);
   transform: translateX(-50%);
   font-size: 15px;
@@ -165,22 +165,74 @@ canvas {
   text-shadow: 0 0 6px rgba(80, 140, 200, 0.25);
 }
 
-/* ===== UNDER CONSTRUCTION MESSAGE (ADJUSTED POSITION) ===== */
+/* ===== UNDER CONSTRUCTION MESSAGE ===== */
 #under-construction-message {
   position: absolute;
-  top: 380px; /* visually under buttons */
+  top: 380px;
   left: 50%;
   transform: translateX(-50%);
-  width: 600px; /* keeps text centered nicely */
+  width: 600px;
   color: #70c2ff;
   font-size: 22px;
   font-weight: 500;
-  line-height: 1.5; /* improves readability */
+  line-height: 1.5;
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(79,179,255,0.4);
   z-index: 10200;
   pointer-events: none;
 }
+
+/* ===== FEEDBACK FORM ===== */
+#feedback-container {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  text-align: center;
+  color: #70c2ff;
+  z-index: 10250;
+}
+
+#feedback-form label {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#feedback-form input,
+#feedback-form textarea {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border: 1px solid #70c2ff;
+  background: rgba(0,0,0,0.25);
+  color: #fff;
+  font-size: 14px;
+}
+
+#feedback-form textarea {
+  height: 60px;
+  resize: vertical;
+}
+
+#feedback-form button {
+  margin-top: 4px;
+}
+
+/* ===== PAGE VIEW COUNTER ===== */
+#page-counter {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: rgba(160, 200, 235, 0.85);
+  font-size: 14px;
+  text-shadow: 0 0 4px rgba(80, 140, 200, 0.25);
+  z-index: 10260;
+}
+
 </style>
 </head>
 <body>
@@ -225,6 +277,25 @@ canvas {
     In the meantime, you can support our journey by clicking the Donate button. 
     Every contribution helps us make this universe even brighter! 💙
   </div>
+
+  <!-- Feedback form -->
+  <div id="feedback-container">
+    <form id="feedback-form" action="mailto:JohnBender612@example.com" method="POST" enctype="text/plain">
+      <label for="user-email">Your Email (optional):</label>
+      <input type="email" id="user-email" name="user-email" placeholder="you@example.com">
+      
+      <label for="user-message">Your Thoughts:</label>
+      <textarea id="user-message" name="user-message" placeholder="Feedback, ideas, or suggestions..."></textarea>
+      
+      <button type="submit" class="cosmic-btn">Send Feedback</button>
+    </form>
+  </div>
+
+  <!-- Page view counter -->
+  <div id="page-counter">
+    You’re visitor <span id="visitor-count">1</span> to this page
+  </div>
+
 </div>
 
 <script>
@@ -260,6 +331,12 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
     });
   }
 });
+
+/* ===== PAGE VIEW COUNTER ===== */
+let count = localStorage.getItem('visitorCount') || 0;
+count++;
+localStorage.setItem('visitorCount', count);
+document.getElementById('visitor-count').textContent = count;
 
 /* ===== ORBIT REMOVED ===== */
 // Buttons are static; positions handled in CSS
