@@ -152,13 +152,12 @@ canvas {
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
 
-/* Gentle, non-pressuring text under Donate, right side extended 10px */
+/* Gentle, non-pressuring text under Donate, original placement */
 #donate-note {
   position: absolute;
   top: 355px; /* evenly below the Donate button */
   left: calc(50% + 400px);
   transform: translateX(-50%);
-  width: calc(100% + 10px); /* moves right side 10px outward */
   font-size: 15px;
   color: rgba(160,200,235,0.85);
   text-align: center;
@@ -202,21 +201,20 @@ canvas {
   font-weight: 500;
 }
 
+/* Remove boxes from input and textarea */
 #feedback-form input,
 #feedback-form textarea {
+  border: none;           /* no visible box */
+  background: transparent; /* transparent background */
+  color: #fff;             /* text still visible */
   width: 100%;
-  padding: 6px 8px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  border: 1px solid #70c2ff;
-  background: rgba(0,0,0,0.25);
-  color: #fff;
+  padding: 6px 0;          /* spacing */
   font-size: 14px;
+  resize: none;            /* optional for textarea */
 }
 
 #feedback-form textarea {
   height: 60px;
-  resize: vertical;
 }
 
 #feedback-form button {
