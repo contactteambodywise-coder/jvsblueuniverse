@@ -1,7 +1,7 @@
 <!-- =========================
      CURRENT BLUEPRINT
-     Notes: "J&V's" and "Blue Universe" text brightness fixed
-========================= -->
+     DO NOT MODIFY
+     ========================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,37 +28,16 @@ canvas {
 <canvas id="space"></canvas>
 
 <script>
-/* =========================
-  META / INFO / DEBUG NOTES
-  =========================
-  Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
-  Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
-  Cosmic Worm:
-    - Head radius: 15px
-    - Segments: 25 for flowing length
-    - Body: rgba(0,150,255,0.9)
-    - Mist trail: rgba(255,255,100,0.25)
-    - Wiggle via segment-following
-    - Tail follows head, fading in alpha & radius
-    - Head clamped to canvas edges
-    - Works on desktop + mobile
-  Text Objects:
-    "J&V's" - top-center, size 80px, cloudy blue, pulses alpha 0→1
-    "Blue Universe" - top-center, size 50px, misty blue, static alpha 1 (brightness fixed)
-  Locked: Stars, shooting stars, canvas background remain untouched
-  Notes for future dev: Segment count, size, velocity, gradient stops adjustable. Keep locked elements safe.
-========================= */
-
 /* ===== CANVAS SETUP ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
-function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
 window.addEventListener("resize", resize);
 resize();
 
 /* ===== STARFIELD ===== */
-const stars = Array.from({length:800},() => ({
+const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
@@ -67,8 +46,10 @@ const stars = Array.from({length:800},() => ({
 }));
 
 let px=0, py=0;
-window.addEventListener("mousemove", e => { px=(e.clientX-w/2)/100; py=(e.clientY-h/2)/100; });
-window.addEventListener("deviceorientation", e => { px=(e.gamma||0)/45*100; py=(e.beta||0)/45*100; });
+window.addEventListener("mousemove", e=>{
+  px=(e.clientX-w/2)/100;
+  py=(e.clientY-h/2)/100;
+});
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -83,10 +64,10 @@ function spawnShootingStar(){
     color:"255,255,255"
   });
 }
-setInterval(()=>{if(Math.random()<0.01) spawnShootingStar();},50);
+setInterval(()=>{ if(Math.random()<0.01) spawnShootingStar(); },50);
 
 /* ===== COSMIC WORM ===== */
-const worm = {
+const worm={
   segments:25,
   positions:[],
   size:15,
@@ -95,10 +76,10 @@ const worm = {
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
-for(let i=0;i<worm.segments;i++){ worm.positions.push({x:w/2,y:h/2}); }
+for(let i=0;i<worm.segments;i++) worm.positions.push({x:w/2,y:h/2});
 
-/* ===== TEXT OBJECTS ===== */
-const jvText = {
+/* ===== TEXT: J&V's ===== */
+const textObj={
   text:"J&V's",
   size:80,
   x:w/2,
@@ -106,18 +87,9 @@ const jvText = {
   baseAlpha:0,
   pulseSpeed:0.02,
   alphaDirection:1,
-  color:"rgba(100,150,255,ALPHA)" // cloudy blue
+  color:"rgba(100,150,255,ALPHA)"
 };
 
-const blueUniverseText = {
-  text:"Blue Universe",
-  size:50,
-  x:w/2,
-  y:160,
-  color:"rgba(100,150,255,1)" // misty blue, alpha fixed at 1
-};
-
-/* ===== DRAW FUNCTIONS ===== */
 function drawStars(){
   stars.forEach(s=>{
     ctx.globalAlpha=s.a*s.z;
@@ -130,42 +102,18 @@ function drawStars(){
 
 function drawShootingStars(){
   shootingStars.forEach((s,i)=>{
-    const tail=s.trail;
-    const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail);
-    grad.addColorStop(0,`rgba(${s.color},0.9)`);
-    grad.addColorStop(0.3,`rgba(${s.color},0.5)`);
-    grad.addColorStop(1,`rgba(${s.color},0)`);
-    ctx.strokeStyle=grad;
+    const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*s.trail,s.y-s.vy*s.trail);
+    g.addColorStop(0,`rgba(${s.color},0.9)`);
+    g.addColorStop(1,`rgba(${s.color},0)`);
+    ctx.strokeStyle=g;
     ctx.lineWidth=s.width;
-    ctx.lineCap="round";
     ctx.beginPath();
     ctx.moveTo(s.x,s.y);
-    ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail);
+    ctx.lineTo(s.x-s.vx*s.trail,s.y-s.vy*s.trail);
     ctx.stroke();
-    s.x+=s.vx;
-    s.y+=s.vy;
+    s.x+=s.vx; s.y+=s.vy;
     if(s.x<-100||s.x>w+100||s.y<-100||s.y>h+100) shootingStars.splice(i,1);
   });
-}
-
-function drawWorm(){
-  for(let i=0;i<worm.segments;i++){
-    const pos=worm.positions[i];
-    const radius=worm.size*(1-i*0.04);
-    const alpha=1-i*0.04;
-    const grad=ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,radius*2);
-    grad.addColorStop(0,worm.color);
-    grad.addColorStop(0.5,worm.mistColor);
-    grad.addColorStop(1,"rgba(0,0,0,0)");
-    ctx.beginPath();
-    ctx.arc(pos.x,pos.y,radius*2,0,Math.PI*2);
-    ctx.fillStyle=grad;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(pos.x,pos.y,radius,0,Math.PI*2);
-    ctx.fillStyle=worm.color;
-    ctx.fill();
-  }
 }
 
 function updateWorm(){
@@ -174,52 +122,46 @@ function updateWorm(){
   worm.vy+=(Math.random()-0.5)*0.3;
   worm.vx=Math.max(Math.min(worm.vx,1.5),-1.5);
   worm.vy=Math.max(Math.min(worm.vy,1.5),-1.5);
-  head.x+=worm.vx;
-  head.y+=worm.vy;
-  if(head.x<0){head.x=0;worm.vx*=-1;}
-  if(head.x>w){head.x=w;worm.vx*=-1;}
-  if(head.y<0){head.y=0;worm.vy*=-1;}
-  if(head.y>h){head.y=h;worm.vy*=-1;}
-  
+  head.x+=worm.vx; head.y+=worm.vy;
   for(let i=1;i<worm.segments;i++){
-    const prev=worm.positions[i-1];
-    const cur=worm.positions[i];
-    cur.x+=(prev.x-cur.x)*0.2;
-    cur.y+=(prev.y-cur.y)*0.2;
+    const p=worm.positions[i-1], c=worm.positions[i];
+    c.x+=(p.x-c.x)*0.2;
+    c.y+=(p.y-c.y)*0.2;
   }
 }
 
-function drawTextObj(){
-  // JV text pulsing
-  jvText.baseAlpha += jvText.pulseSpeed * jvText.alphaDirection;
-  if(jvText.baseAlpha>1){jvText.baseAlpha=1;jvText.alphaDirection=-1;}
-  if(jvText.baseAlpha<0){jvText.baseAlpha=0;jvText.alphaDirection=1;}
-  const colorJV=jvText.color.replace("ALPHA",jvText.baseAlpha);
-  ctx.font=`bold ${jvText.size}px sans-serif`;
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillStyle=colorJV;
-  ctx.fillText(jvText.text,jvText.x,jvText.y);
-
-  // Blue Universe text static alpha 1
-  ctx.font=`bold ${blueUniverseText.size}px sans-serif`;
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillStyle=blueUniverseText.color;
-  ctx.fillText(blueUniverseText.text,blueUniverseText.x,blueUniverseText.y);
+function drawWorm(){
+  worm.positions.forEach((p,i)=>{
+    const r=worm.size*(1-i*0.04);
+    const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2);
+    g.addColorStop(0,worm.color);
+    g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,r*2,0,Math.PI*2);
+    ctx.fill();
+  });
 }
 
-/* ===== ANIMATION LOOP ===== */
+function drawText(){
+  textObj.baseAlpha+=textObj.pulseSpeed*textObj.alphaDirection;
+  if(textObj.baseAlpha>1){textObj.baseAlpha=1;textObj.alphaDirection=-1;}
+  if(textObj.baseAlpha<0){textObj.baseAlpha=0;textObj.alphaDirection=1;}
+  ctx.font=`bold ${textObj.size}px sans-serif`;
+  ctx.fillStyle=textObj.color.replace("ALPHA",textObj.baseAlpha);
+  ctx.textAlign="center";
+  ctx.fillText(textObj.text,textObj.x,textObj.y);
+}
+
 function animate(){
   ctx.clearRect(0,0,w,h);
   drawStars();
   drawShootingStars();
   updateWorm();
   drawWorm();
-  drawTextObj();
+  drawText();
   requestAnimationFrame(animate);
 }
-
 animate();
 </script>
 </body>
