@@ -23,9 +23,12 @@ canvas {
 <canvas id="space"></canvas>
 
 <script>
-/* ===== CURRENT BLUEPRINT =====
-   Text alpha stabilized
-   New text objects added
+/* ===== PREVIOUS BLUEPRINT =====
+   Phase 1 completed:
+   - Restored long Cosmic Worm
+   - Increased segment count
+   - Smoothed segment follow
+   NOTHING else changed
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -59,10 +62,10 @@ setInterval(()=>{
 
 /* ===== COSMIC WORM ===== */
 const worm={
-  segments:25,
-  size:15,
+  segments:60,
+  size:12,
   color:"rgba(0,150,255,0.9)",
-  pos:Array.from({length:25},()=>({x:w/2,y:h/2})),
+  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
@@ -103,7 +106,7 @@ function draw(){
     ctx.fill();
   });
 
-  shootingStars.forEach((s,i)=>{
+  shootingStars.forEach(s=>{
     ctx.strokeStyle="rgba(255,255,255,0.8)";
     ctx.beginPath();
     ctx.moveTo(s.x,s.y);
@@ -116,15 +119,17 @@ function draw(){
   hpos.x+=worm.vx; hpos.y+=worm.vy;
   if(hpos.x<0||hpos.x>w) worm.vx*=-1;
   if(hpos.y<0||hpos.y>h) worm.vy*=-1;
+
   for(let i=1;i<worm.segments;i++){
-    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.2;
-    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.2;
+    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;
+    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;
   }
+
   worm.pos.forEach((p,i)=>{
-    ctx.globalAlpha=1-i*0.04;
+    ctx.globalAlpha=1-i*0.015;
     ctx.fillStyle=worm.color;
     ctx.beginPath();
-    ctx.arc(p.x,p.y,worm.size*(1-i*0.04),0,Math.PI*2);
+    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
   });
 
