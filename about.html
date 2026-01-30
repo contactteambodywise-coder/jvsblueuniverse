@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe</title>
+<title>About - J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -12,6 +12,7 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: sans-serif;
+  color: rgba(120,170,255,0.9);
 }
 canvas {
   position: fixed;
@@ -32,17 +33,17 @@ canvas {
   font-size: 28px;
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  transition: transform 0.1s, box-shadow 0.1s, box-shadow 0.5s;
+  transition: transform 0.1s, box-shadow 0.1s;
   z-index: 2;
-  text-shadow: 0 0 8px rgba(100, 149, 237, 0.8);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
 .button:active {
   transform: translateX(-50%) translateY(3px);
-  box-shadow: 0 2px 8px rgba(100, 149, 237, 0.3);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 .button:hover {
-  box-shadow: 0 0 20px rgba(100, 149, 237, 0.8), 0 0 40px rgba(100, 149, 237, 0.4);
-  text-shadow: 0 0 12px rgba(100, 149, 237, 1);
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
 }
 </style>
 </head>
@@ -52,42 +53,30 @@ canvas {
 
 <!-- ===== BUTTONS ===== -->
 <button id="donateBtn" class="button">Donate</button>
-<button id="homeBtn" class="button">Home</button>
+<button id="homeBtn" class="button" style="top: 140px;">Home</button>
 
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
-
 function resize(){ 
   w = canvas.width = window.innerWidth; 
   h = canvas.height = window.innerHeight; 
 
-  const donateBtn = document.getElementById("donateBtn");
-  const homeBtn = document.getElementById("homeBtn");
-  donateBtn.style.top = (h/2 - 70) + "px";
-  homeBtn.style.top = (h/2 + 10) + "px"; // 60px below donate
+  document.getElementById("donateBtn").style.top = (h/2 + 160) + "px";
+  document.getElementById("homeBtn").style.top = (h/2 + 220) + "px";
 }
 window.addEventListener("resize",resize);
 resize();
 
 /* ===== STARS ===== */
-const stars = Array.from({length:800},()=>({
+const stars = Array.from({length:600},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
   a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5,
-  baseX:0,
-  baseY:0
+  r:Math.random()*1.5+0.5
 }));
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
-
-/* ===== FLOATING NAMES AS STARS ===== */
-const names = [
-  { text:"John Bender", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 },
-  { text:"Veyra", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 }
-];
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -96,7 +85,7 @@ setInterval(()=>{
     shootingStars.push({
       x:Math.random()*w,
       y:Math.random()*h,
-      z:(Math.random()*0.5+0.5),
+      z:Math.random()*0.5+0.5,
       vx:(Math.random()*8-4),
       vy:(Math.random()*8-4),
       length:Math.random()*20+10,
@@ -115,41 +104,37 @@ const worm={
   vy:(Math.random()-0.5)*1.5
 };
 
-/* ===== TEXT OBJECTS ===== */
-const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
-const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
-const textWelcome = { 
-  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙", 
-  x:()=>w/2, 
-  y:()=>h/2 + 100, 
-  size:28, 
-  color:"rgba(120,170,255,0.8)",
-  maxWidth:()=>w * 0.7
-};
+/* ===== OUR NAMES AS STARS ===== */
+const nameStars = [
+  {text:"John Bender", x:50, y:50, vx:0.3 + Math.random()*0.2, vy:0.1 + Math.random()*0.1},
+  {text:"Victoria Bender", x:300, y:100, vx:0.3 + Math.random()*0.2, vy:0.1 + Math.random()*0.1}
+];
+
+/* ===== BODY TEXT ===== */
+const bodyText = `Welcome to J&V’s Blue Universe! 💙
+This universe began as a tiny spark of curiosity, creativity, and a pinch of cosmic mischief. One day, while dreaming up ways to make our world more playful, the cosmic worm 🪱 appeared—a little guide to remind us that even the smallest, unexpected things can bring joy and wonder.
+
+Our mission is simple: to explore new ideas, share inspiration, and grow this universe together. We add new thoughts, experiments, and playful bursts almost every day, all designed to surprise and delight.
+
+We believe in fun, honesty, and heart—and we hope you feel that the moment you step in. If you ever have an idea, question, or just want to say hi, don’t hesitate to email me at johnbuddy624@gmail.com.
+
+And yes—if you’d like to support our universe, the donate button is here for you. No pressure, no obligations—just a way to help this universe grow a little brighter. 🌟
+
+Thank you for being here. We’re so glad to have you along for the ride!`;
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Background stars with slow drift
+  // Stars
   stars.forEach(s=>{
-    s.x += 0.2*s.z;
-    if(s.x > w) s.x = 0;
+    s.x += 0.1*s.z;
+    if(s.x>w) s.x=0;
     ctx.globalAlpha = s.a*s.z;
     ctx.fillStyle="white";
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
-  });
-
-  // Floating names
-  names.forEach(n=>{
-    n.x += 0.15*n.z; // float speed
-    if(n.x>w) n.x = 0;
-    ctx.globalAlpha = 1;
-    ctx.font = `${30*n.z}px sans-serif`;
-    ctx.fillStyle = "rgba(150,200,255,0.85)";
-    ctx.fillText(n.text, n.x, n.y);
   });
 
   // Shooting stars
@@ -165,9 +150,7 @@ function draw(){
     }
     s.x += s.vx*s.z;
     s.y += s.vy*s.z;
-    if(s.x<0 || s.x>w || s.y<0 || s.y>h){
-      shootingStars.splice(i,1);
-    }
+    if(s.x<0||s.x>w||s.y<0||s.y>h) shootingStars.splice(i,1);
   });
 
   // Cosmic worm
@@ -187,49 +170,36 @@ function draw(){
     ctx.fill();
   });
 
-  // Main text
-  ctx.globalAlpha=1;
-  ctx.textAlign="center";
-  ctx.font=`bold ${textJV.size}px sans-serif`;
-  ctx.fillStyle=textJV.color;
-  ctx.fillText(textJV.text,textJV.x(),textJV.y);
-  ctx.font=`${textBU.size}px sans-serif`;
-  ctx.fillStyle=textBU.color;
-  ctx.fillText(textBU.text,textBU.x(),textBU.y);
+  // Names floating
+  ctx.font = "bold 32px sans-serif";
+  ctx.fillStyle = "rgba(120,200,255,0.9)";
+  nameStars.forEach(n=>{
+    ctx.fillText(n.text, n.x, n.y);
+    n.x += n.vx;
+    n.y += Math.sin(Date.now()*0.002)*0.5 + n.vy;
+    if(n.x > w) n.x = -200;
+    if(n.y > h) n.y = 0;
+  });
 
-  // Wrapped welcome text
-  ctx.font=`${textWelcome.size}px sans-serif`;
-  ctx.fillStyle=textWelcome.color;
-  const words = textWelcome.text.split(" ");
-  let line = "";
-  let lineHeight = textWelcome.size * 1.2;
-  let startY = textWelcome.y();
-  let maxWidth = textWelcome.maxWidth();
-  for(let i=0; i<words.length; i++){
-    const testLine = line + words[i] + " ";
-    const metrics = ctx.measureText(testLine);
-    if(metrics.width > maxWidth && i > 0){
-      ctx.fillText(line, w/2, startY);
-      line = words[i] + " ";
-      startY += lineHeight;
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line, w/2, startY);
+  // Body text (vertically squished)
+  ctx.font = "20px sans-serif";
+  ctx.fillStyle = "rgba(120,170,255,0.85)";
+  ctx.textAlign="center";
+  const lines = bodyText.split("\n");
+  let startY = h/4 + 60; // slightly higher
+  lines.forEach(line=>{
+    ctx.fillText(line, w/2, startY);
+    startY += 24; // squished line height
+  });
 
   requestAnimationFrame(draw);
 }
 draw();
 
 /* ===== BUTTON CLICKS ===== */
-document.getElementById("donateBtn").addEventListener("click",()=>{
-  window.open("https://www.paypal.me/JohnBender612", "_blank");
-});
+document.getElementById("donateBtn").addEventListener("click",()=>window.open("https://www.paypal.me/JohnBender612","_blank"));
+document.getElementById("homeBtn").addEventListener("click",()=>window.location.href="index.html");
 
-document.getElementById("homeBtn").addEventListener("click",()=>{
-  window.location.href = "index.html"; // <- Link to main page
-});
 </script>
 </body>
 </html>
