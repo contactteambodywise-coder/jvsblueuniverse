@@ -176,7 +176,7 @@ function draw(){
   // Text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
-  ctx.font=`bold ${textJV.size}px sans-serif`;
+  ctx.font=`bold ${textJV.size}px Times New Roman`;
   ctx.fillStyle=textJV.color;
   ctx.fillText(textJV.text,textJV.x(),textJV.y);
   ctx.font=`${textBU.size}px Times New Roman`;
@@ -184,7 +184,7 @@ function draw(){
   ctx.fillText(textBU.text,textBU.x(),textBU.y);
 
   // Wrapped welcome text
-  ctx.font=`${textWelcome.size}px sans-serif`;
+  ctx.font=`${textWelcome.size}px Times New Roman`;
   ctx.fillStyle=textWelcome.color;
   const words = textWelcome.text.split(" ");
   let line = "";
