@@ -2,39 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hyper-Real Saturn Playground</title>
+<title>Saturn Showcase</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  background: black;
   width: 100%;
   height: 100%;
+  background: black;
   overflow: hidden;
   font-family: sans-serif;
 }
-canvas { position: fixed; inset: 0; z-index: 0; }
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
 #info {
   position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  color: #70c2ff;
-  font-size: 24px;
+  color: rgba(200,220,255,0.9);
+  font-size: 22px;
   text-align: center;
   z-index: 2;
 }
 </style>
 </head>
 <body>
-
-<div id="info">🌌 Hyper-Real Saturn 🌌</div>
 <canvas id="space"></canvas>
+<div id="info">✨ Saturn in all its glory ✨</div>
 
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w,h;
+let w, h;
 
 function resize() {
   w = canvas.width = window.innerWidth;
@@ -43,137 +46,110 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* ===== STARS ===== */
-const stars = Array.from({length:250}, () => ({
-  x: Math.random()*w,
-  y: Math.random()*h,
-  z: Math.random()*0.5+0.5,
-  r: Math.random()*1.5+0.5
+/* ===== STARS BACKGROUND ===== */
+const stars = Array.from({length:400},()=>({
+  x:Math.random()*w,
+  y:Math.random()*h,
+  r:Math.random()*1.5+0.5,
+  a:Math.random()*0.7+0.3
 }));
 
 /* ===== SATURN PARAMETERS ===== */
 const saturn = {
   x: w/2,
   y: h/2,
-  radius: 100,
+  radius: 120,
   rotation: 0,
-  rotationSpeed: 0.002,
-  rings: {
-    innerRadius: 120,
-    outerRadius: 210,
-    rotation: 0,
-    rotationSpeed: 0.0015,
-    layers: 6
+  ring: {
+    inner: 140,
+    outer: 240,
+    angle: 0
   }
 };
 
-/* ===== MOONS ===== */
-const moons = Array.from({length:5}, () => ({
-  angle: Math.random() * Math.PI * 2,
-  distance: 250 + Math.random() * 120,
-  radius: 5 + Math.random()*6,
-  speed: 0.001 + Math.random()*0.0015
-}));
+/* ===== MOON ===== */
+const moon = {
+  radius: 18,
+  distance: 280,
+  angle: 0,
+  speed: 0.008
+};
+
+/* ===== PRE-RENDERED RINGS ===== */
+const ringCanvas = document.createElement('canvas');
+const ringCtx = ringCanvas.getContext('2d');
+ringCanvas.width = saturn.ring.outer*2+20;
+ringCanvas.height = saturn.ring.outer*2+20;
+function createRings() {
+  const cx = ringCanvas.width/2;
+  const cy = ringCanvas.height/2;
+  for (let i=0; i<500; i++) {
+    const r = Math.random()*(saturn.ring.outer-saturn.ring.inner)+saturn.ring.inner;
+    const angle = Math.random()*Math.PI*2;
+    const size = Math.random()*2 + 0.5;
+    ringCtx.fillStyle = `rgba(200,180,120,${Math.random()*0.6+0.2})`;
+    ringCtx.beginPath();
+    ringCtx.arc(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r*0.4, size, 0, Math.PI*2);
+    ringCtx.fill();
+  }
+}
+createRings();
 
 /* ===== DRAW LOOP ===== */
-function draw() {
+function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // moving stars
-  stars.forEach(s => {
-    s.x += 0.05 * s.z;
-    if(s.x > w) s.x = 0;
-    ctx.fillStyle = `rgba(255,255,255,${0.5 + 0.5*Math.random()})`;
+  // Draw stars
+  stars.forEach(s=>{
+    s.x += 0.05;
+    if(s.x>w) s.x=0;
+    ctx.globalAlpha = s.a;
+    ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
     ctx.fill();
   });
 
-  // Saturn rotation
-  saturn.rotation += saturn.rotationSpeed;
-  saturn.rings.rotation += saturn.rings.rotationSpeed;
-
+  // Draw Saturn
+  saturn.rotation += 0.001;
   ctx.save();
   ctx.translate(saturn.x, saturn.y);
 
-  // ----- Rings -----
-  for(let i=0;i<saturn.rings.layers;i++){
-    const layerInner = saturn.rings.innerRadius + i*12;
-    const layerOuter = layerInner + 10;
-    const alpha = 0.15 - i*0.015;
-    ctx.save();
-    ctx.rotate(saturn.rings.rotation + i*0.02);
-    const grad = ctx.createRadialGradient(0,0,layerInner,0,0,layerOuter);
-    grad.addColorStop(0, `rgba(220,200,160,${alpha})`);
-    grad.addColorStop(1, `rgba(180,150,120,0)`);
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.ellipse(0,0,(layerInner+layerOuter)/2, layerOuter, 0,0,Math.PI*2);
-    ctx.fill();
-
-    // tiny drifting dust
-    for(let d=0; d<10; d++){
-      const dustAngle = Math.random()*Math.PI*2;
-      const dustRadius = layerInner + Math.random()*(layerOuter-layerInner);
-      const dx = Math.cos(dustAngle + saturn.rings.rotation*0.5)*dustRadius;
-      const dy = Math.sin(dustAngle + saturn.rings.rotation*0.5)*dustRadius*0.5;
-      ctx.fillStyle = `rgba(255,255,220,0.1)`;
-      ctx.beginPath();
-      ctx.arc(dx,dy,1.5,0,Math.PI*2);
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }
-
-  // ring shadow on Saturn
-  ctx.save();
-  ctx.rotate(saturn.rings.rotation);
-  ctx.fillStyle = "rgba(0,0,0,0.15)";
-  ctx.beginPath();
-  ctx.ellipse(0,0,(saturn.rings.outerRadius+saturn.rings.innerRadius)/2, saturn.rings.innerRadius, 0, 0, Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-
-  // ----- Saturn Sphere -----
-  ctx.save();
-  ctx.rotate(saturn.rotation);
-  const grad = ctx.createRadialGradient(0,0,saturn.radius*0.2,0,0,saturn.radius);
-  grad.addColorStop(0, "#f7e0b5");
-  grad.addColorStop(0.4, "#d2b48c");
-  grad.addColorStop(0.7, "#b9956d");
-  grad.addColorStop(1, "#a67c52");
+  // Planet shading
+  const grad = ctx.createRadialGradient(0,0,saturn.radius*0.3, 0,0,saturn.radius);
+  grad.addColorStop(0, "#ffe0a0");
+  grad.addColorStop(1, "#d9b36b");
   ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.arc(0,0,saturn.radius,0,Math.PI*2);
   ctx.fill();
 
-  // subtle polar glow
-  const glowGrad = ctx.createRadialGradient(0,0,0,0,0,saturn.radius);
-  glowGrad.addColorStop(0, "rgba(255,255,220,0.15)");
-  glowGrad.addColorStop(1, "rgba(255,255,220,0)");
-  ctx.fillStyle = glowGrad;
-  ctx.beginPath();
-  ctx.arc(0,0,saturn.radius,0,Math.PI*2);
-  ctx.fill();
+  // Draw rings
+  ctx.save();
+  ctx.rotate(saturn.ring.angle);
+  ctx.drawImage(ringCanvas, -ringCanvas.width/2, -ringCanvas.height/2);
+  ctx.restore();
 
   ctx.restore();
 
-  // Moons orbiting
-  moons.forEach(m => {
-    m.angle += m.speed;
-    const mx = saturn.x + Math.cos(m.angle) * m.distance;
-    const my = saturn.y + Math.sin(m.angle) * m.distance;
-    ctx.fillStyle = "#ccc";
-    ctx.beginPath();
-    ctx.arc(mx,my,m.radius,0,Math.PI*2);
-    ctx.fill();
-  });
+  // Update ring rotation
+  saturn.ring.angle += 0.002;
+
+  // Draw moon orbiting Saturn
+  moon.angle += moon.speed;
+  const mx = saturn.x + Math.cos(moon.angle)*moon.distance;
+  const my = saturn.y + Math.sin(moon.angle)*moon.distance*0.6;
+  const moonGrad = ctx.createRadialGradient(mx,my,2,mx,my,moon.radius);
+  moonGrad.addColorStop(0,"#ffffff");
+  moonGrad.addColorStop(1,"#aaaaaa");
+  ctx.fillStyle = moonGrad;
+  ctx.beginPath();
+  ctx.arc(mx,my,moon.radius,0,Math.PI*2);
+  ctx.fill();
 
   requestAnimationFrame(draw);
 }
 draw();
 </script>
-
 </body>
 </html>
