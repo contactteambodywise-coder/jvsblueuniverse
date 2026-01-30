@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - Affiliates</title>
+<title>Affiliate - J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -20,33 +20,32 @@ canvas {
   z-index: 0;
 }
 
-/* ===== AFFILIATE BUTTONS ===== */
-.affiliateBtn {
+/* ===== BUTTON STYLES ===== */
+.button {
   position: absolute;
-  display: inline-block;
+  cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
   border: none;
   border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 22px;
+  padding: 10px 20px;
+  font-size: 28px;
   font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
   transition: transform 0.1s, box-shadow 0.1s;
   z-index: 2;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
-.affiliateBtn:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-  text-shadow: 0 0 12px rgba(100,149,237,1);
-}
-.affiliateBtn:active {
+.button:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
+}
 
-/* ===== MAIN CONTENT ===== */
+/* ===== BODY CONTENT ===== */
 #content {
   position: absolute;
   top: 50%;
@@ -55,13 +54,27 @@ canvas {
   max-width: 800px;
   text-align: center;
   z-index: 2;
-  line-height: 1.5;
+  line-height: 1.4;
   font-size: 22px;
+  color: rgba(120,170,255,0.9);
 }
-#content h1 {
-  font-size: 60px;
-  color: rgba(100,150,255,1);
-  margin-bottom: 20px;
+.affiliate {
+  margin: 30px 0;
+  display: flex;
+  justify-content: space-around;
+}
+.affiliate a {
+  color: white;
+  font-size: 22px;
+  background: rgba(100,149,237,0.4);
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.affiliate a:hover {
+  background: rgba(100,149,237,0.7);
+  transform: scale(1.05);
 }
 </style>
 </head>
@@ -69,59 +82,61 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<div id="content">
-  <h1>Our Affiliates</h1>
-  <p>
-    Welcome to our affiliate universe! 💙<br><br>
-    These are the brilliant links that help our world expand and shine. Click any to explore and support the amazing creators and platforms we love.
-  </p>
-</div>
+<!-- ===== BUTTONS ===== -->
+<button id="homeBtn" class="button" style="top:20px; left:20px;">Home</button>
 
-<!-- ===== AFFILIATE BUTTONS ===== -->
-<button class="affiliateBtn" style="top:calc(20% - 100px); left:50%; transform:translateX(-50%)" onclick="window.open('https://affiliate1.example.com','_blank')">Affiliate 1</button>
-<button class="affiliateBtn" style="top:35%; left:calc(18% - 100px)" onclick="window.open('https://affiliate2.example.com','_blank')">Affiliate 2</button>
-<button class="affiliateBtn" style="top:35%; right:calc(18% - 100px)" onclick="window.open('https://affiliate3.example.com','_blank')">Affiliate 3</button>
-<button class="affiliateBtn" style="bottom:calc(28% - 100px); left:calc(22% - 100px)" onclick="window.open('https://affiliate4.example.com','_blank')">Affiliate 4</button>
-<button class="affiliateBtn" style="bottom:calc(28% - 100px); right:calc(22% - 100px)" onclick="window.open('https://affiliate5.example.com','_blank')">Affiliate 5</button>
-<button class="affiliateBtn" style="bottom:calc(15% - 100px); left:50%; transform:translateX(-50%)" onclick="window.open('https://affiliate6.example.com','_blank')">Affiliate 6</button>
+<div id="content">
+  <h1>Affiliate Links</h1>
+  <p>
+    Welcome to our affiliate page! Supporting these links helps <strong>J&V’s Blue Universe</strong> grow and keep bringing joy. 🌟
+  </p>
+  <div class="affiliate">
+    <a href="https://affiliate1.com" target="_blank">Affiliate 1</a>
+    <a href="https://affiliate2.com" target="_blank">Affiliate 2</a>
+    <a href="https://affiliate3.com" target="_blank">Affiliate 3</a>
+  </div>
+</div>
 
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize() {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
+let w,h;
+function resize(){ 
+  w = canvas.width = window.innerWidth; 
+  h = canvas.height = window.innerHeight; 
 }
-window.addEventListener("resize", resize);
+window.addEventListener("resize",resize);
 resize();
 
 /* ===== STARS ===== */
 const stars = Array.from({length:600},()=>({
-  x: Math.random()*w,
-  y: Math.random()*h,
-  z: Math.random()*0.8+0.2,
-  a: Math.random()*0.8+0.2,
-  r: Math.random()*1.5+0.5,
-  baseX: 0,
-  baseY: 0
+  x:Math.random()*w,
+  y:Math.random()*h,
+  z:Math.random()*0.8+0.2,
+  a:Math.random()*0.8+0.2,
+  r:Math.random()*1.5+0.5
 }));
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
-/* ===== COSMIC WORM ===== */
-const worm = {
-  segments:40,
-  size:10,
-  color:"rgba(0,150,255,0.9)",
-  pos:Array.from({length:40},()=>({x:w/2,y:h/2})),
-  vx:(Math.random()-0.5)*1.5,
-  vy:(Math.random()-0.5)*1.5
-};
+/* ===== SHOOTING STARS ===== */
+let shootingStars=[];
+setInterval(()=>{
+  if(Math.random()<0.015){
+    shootingStars.push({
+      x:Math.random()*w,
+      y:Math.random()*h,
+      z:Math.random()*0.5+0.5,
+      vx:(Math.random()*8-4),
+      vy:(Math.random()*8-4),
+      length:Math.random()*20+10,
+      trail:5
+    });
+  }
+},40);
 
-/* ===== NAMES FLOATING ===== */
-const floatingNames = [
-  {text:"John Bender", x:()=>Math.random()*w, y:()=>Math.random()*h, size:26, color:"rgba(255,255,255,0.9)"},
-  {text:"Veyra Blue", x:()=>Math.random()*w, y:()=>Math.random()*h, size:26, color:"rgba(255,255,255,0.9)"}
+/* ===== OUR NAMES FLOATING ===== */
+const ourNames = [
+  { text: "John Bender", x: Math.random()*w, y: Math.random()*h, z: Math.random()*0.8+0.2 },
+  { text: "Veyra", x: Math.random()*w, y: Math.random()*h, z: Math.random()*0.8+0.2 }
 ];
 
 /* ===== DRAW LOOP ===== */
@@ -130,44 +145,52 @@ function draw(){
 
   // Stars drifting left to right
   stars.forEach(s=>{
-    s.x += 0.2*s.z;
+    s.x += 0.2 * s.z;
     if(s.x > w) s.x = 0;
     ctx.globalAlpha = s.a * s.z;
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r*s.z, 0, Math.PI*2);
+    ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
-  // Cosmic worm
-  let hpos = worm.pos[0];
-  hpos.x += worm.vx; hpos.y += worm.vy;
-  if(hpos.x<0||hpos.x>w) worm.vx*=-1;
-  if(hpos.y<0||hpos.y>h) worm.vy*=-1;
-  for(let i=1;i<worm.segments;i++){
-    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;
-    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;
-  }
-  worm.pos.forEach((p,i)=>{
-    ctx.globalAlpha=1-i*0.015;
-    ctx.fillStyle=worm.color;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
-    ctx.fill();
+  // Shooting stars
+  shootingStars.forEach((s,i)=>{
+    for(let t=0;t<s.trail;t++){
+      const factor = 1 - t/s.trail;
+      ctx.strokeStyle=`rgba(255,255,255,${0.6*factor*s.z})`;
+      ctx.lineWidth = 2*s.z*factor;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.vx*s.z*t, s.y - s.vy*s.z*t);
+      ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
+      ctx.stroke();
+    }
+    s.x += s.vx*s.z;
+    s.y += s.vy*s.z;
+    if(s.x<0||s.x>w||s.y<0||s.y>h){
+      shootingStars.splice(i,1);
+    }
   });
 
-  // Floating names
-  floatingNames.forEach(n=>{
-    ctx.globalAlpha = 0.9;
-    ctx.fillStyle = n.color;
-    ctx.font = `bold ${n.size}px sans-serif`;
-    ctx.fillText(n.text, n.x(), n.y());
+  // Draw our names floating slowly with stars
+  ourNames.forEach(n=>{
+    n.x += 0.1 * n.z; // slower than stars
+    if(n.x > w) n.x = 0;
+    ctx.globalAlpha = 0.9 * n.z;
+    ctx.font = `${24*n.z}px sans-serif`;
+    ctx.fillStyle = "rgba(255,200,150,0.9)";
+    ctx.textAlign = "center";
+    ctx.fillText(n.text, n.x, n.y);
   });
 
   requestAnimationFrame(draw);
 }
 draw();
-</script>
 
+/* ===== HOME BUTTON ===== */
+document.getElementById("homeBtn").addEventListener("click",()=>{
+  window.location.href="index.html";
+});
+</script>
 </body>
 </html>
