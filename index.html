@@ -25,26 +25,21 @@ canvas {
 
 <script>
 /* =========================
+  PREVIOUS BLUEPRINT
+  =========================
+  Wiggle animation for Cosmic Worm
+  Tail/mist visible
+  Stars/shooting stars safe
+  Pulsing "J&V's" text object functional
+  Works on desktop + mobile
+  Locked: stars, shooting stars, canvas background
+========================= */
+
+/* =========================
   CURRENT BLUEPRINT
   =========================
-  Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
-  Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
-  Cosmic Worm:
-    - Head radius: 15px
-    - Segments: 25 for flowing length
-    - Body: rgba(0,150,255,0.9)
-    - Mist trail: rgba(255,255,100,0.25)
-    - Wiggle via segment-following
-    - Tail follows head, fading in alpha & radius
-    - Head clamped to canvas edges
-    - Works on desktop + mobile
-  Text Object: "J&V's"
-    - Top-center
-    - Size: 80px
-    - Color: cloudy blue
-    - Fixed smooth pulse 0 → 1 alpha
-  Locked: Stars, shooting stars, canvas background remain untouched
-  Notes for future dev: Segment count, size, velocity, gradient stops adjustable. Keep locked elements safe.
+  Added "Blue Universe" static text, top-center, misty blue
+  Nothing else changed from previous blueprint
 ========================= */
 
 /* ===== CANVAS SETUP ===== */
@@ -105,6 +100,15 @@ const textObj = {
   pulseSpeed:0.02,
   alphaDirection:1,
   color:"rgba(100,150,255,ALPHA)" // cloudy blue, ALPHA replaced per frame
+};
+
+/* ===== STATIC BLUE UNIVERSE TEXT ===== */
+const blueUniverse = {
+  text:"Blue Universe",
+  size:50,
+  x:w/2,
+  y:50,
+  color:"rgba(100,150,255,0.3)" // misty blue static
 };
 
 /* ===== DRAW FUNCTIONS ===== */
@@ -180,17 +184,23 @@ function updateWorm(){
 }
 
 function drawTextObj(){
-  // ===== FIXED JV PULSE =====
   textObj.baseAlpha += textObj.pulseSpeed * textObj.alphaDirection;
   if(textObj.baseAlpha>1){textObj.baseAlpha=1;textObj.alphaDirection=-1;}
   if(textObj.baseAlpha<0){textObj.baseAlpha=0;textObj.alphaDirection=1;}
-  // Ensure consistent smooth pulse: always between 0 → 1
-  const color=textObj.color.replace("ALPHA",Math.max(0,Math.min(1,textObj.baseAlpha)));
+  const color=textObj.color.replace("ALPHA",textObj.baseAlpha);
   ctx.font=`bold ${textObj.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
   ctx.fillStyle=color;
   ctx.fillText(textObj.text,textObj.x,textObj.y);
+}
+
+function drawBlueUniverse(){
+  ctx.font=`bold ${blueUniverse.size}px sans-serif`;
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillStyle=blueUniverse.color;
+  ctx.fillText(blueUniverse.text,blueUniverse.x,blueUniverse.y);
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -201,6 +211,7 @@ function animate(){
   updateWorm();
   drawWorm();
   drawTextObj();
+  drawBlueUniverse();
   requestAnimationFrame(animate);
 }
 
