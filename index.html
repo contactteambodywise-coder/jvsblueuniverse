@@ -55,8 +55,8 @@ canvas {
 
 <script>
 /* ===== CURRENT BLUEPRINT =====
-   Phase 2F Upgrade:
-   - Welcome text updated to full personalized message
+   Phase 2G Upgrade:
+   - Welcome text wrapped for better readability
    - Donate button remains glowing and clickable
    - Press animation intact
    - Button 100px above welcome text
@@ -130,7 +130,8 @@ const textWelcome = {
   x:()=>w/2, 
   y:()=>h/2, 
   size:30, 
-  color:"rgba(120,170,255,0.8)" 
+  color:"rgba(120,170,255,0.8)",
+  maxWidth:()=>w * 0.7 // wrap at 70% of screen width
 };
 
 /* ===== DRAW LOOP ===== */
@@ -192,9 +193,27 @@ function draw(){
   ctx.font=`${textBU.size}px sans-serif`;
   ctx.fillStyle=textBU.color;
   ctx.fillText(textBU.text,textBU.x(),textBU.y);
+
+  // Wrapped welcome text
   ctx.font=`${textWelcome.size}px sans-serif`;
   ctx.fillStyle=textWelcome.color;
-  ctx.fillText(textWelcome.text,textWelcome.x(),textWelcome.y());
+  const words = textWelcome.text.split(" ");
+  let line = "";
+  let lineHeight = textWelcome.size * 1.2;
+  let startY = textWelcome.y();
+  let maxWidth = textWelcome.maxWidth();
+  for(let i=0; i<words.length; i++){
+    const testLine = line + words[i] + " ";
+    const metrics = ctx.measureText(testLine);
+    if(metrics.width > maxWidth && i > 0){
+      ctx.fillText(line, w/2, startY);
+      line = words[i] + " ";
+      startY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, w/2, startY);
 
   requestAnimationFrame(draw);
 }
