@@ -100,7 +100,7 @@ const stars = Array.from({length:600},()=>({
   r:Math.random()*1.5+0.5
 }));
 
-/* ===== STAR NAMES ===== */
+/* ===== FLOATING NAME STARS ===== */
 const nameStars = [];
 const fullNames = "John Bender  Veyra Blue";
 ctx.font = "40px sans-serif";
@@ -109,11 +109,12 @@ for(let i=0; i<fullNames.length; i++){
   if(char !== " "){
     nameStars.push({
       char: char,
-      x: w/4 + i*28, // starting left
+      x: w/4 + i*28,
       y: h/2 - 100,
-      dx: Math.random()*0.2 - 0.1,
-      dy: Math.random()*0.2 - 0.1,
-      alpha: Math.random()*0.6+0.4
+      dx: Math.random()*0.3 - 0.15,
+      dy: Math.random()*0.3 - 0.15,
+      alpha: Math.random()*0.6 + 0.4,
+      deltaAlpha: Math.random()*0.02 + 0.005
     });
   }
 }
@@ -148,7 +149,7 @@ const worm={
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars drifting left to right with depth
+  // Stars
   stars.forEach(s=>{
     s.x += 0.2 * s.z;
     if(s.x > w) s.x = 0;
@@ -159,12 +160,14 @@ function draw(){
     ctx.fill();
   });
 
-  // Star names floating
+  // Floating name stars
   nameStars.forEach(s=>{
     s.x += s.dx;
     s.y += s.dy;
-    if(s.x<0 || s.x>w) s.dx*=-1;
-    if(s.y<0 || s.y>h) s.dy*=-1;
+    s.alpha += s.deltaAlpha;
+    if(s.alpha > 1 || s.alpha < 0.4) s.deltaAlpha *= -1; // twinkle
+    if(s.x < 0 || s.x > w) s.dx *= -1;
+    if(s.y < 0 || s.y > h) s.dy *= -1;
     ctx.globalAlpha = s.alpha;
     ctx.fillStyle = "rgba(120,200,255,1)";
     ctx.fillText(s.char, s.x, s.y);
@@ -181,11 +184,9 @@ function draw(){
       ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
       ctx.stroke();
     }
-    s.x += s.vx * s.z;
-    s.y += s.vy * s.z;
-    if(s.x<0||s.x>w||s.y<0||s.y>h){
-      shootingStars.splice(i,1);
-    }
+    s.x += s.vx*s.z;
+    s.y += s.vy*s.z;
+    if(s.x<0||s.x>w||s.y<0||s.y>h) shootingStars.splice(i,1);
   });
 
   // Cosmic worm
