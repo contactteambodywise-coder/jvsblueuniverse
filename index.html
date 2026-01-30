@@ -32,12 +32,18 @@ canvas {
   font-size: 28px; /* scaled close to Blue Universe text size */
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition: transform 0.1s, box-shadow 0.1s, box-shadow 0.5s;
   z-index: 2;
+  /* glow effect */
+  text-shadow: 0 0 8px rgba(100, 149, 237, 0.8);
 }
 #donateBtn:active {
   transform: translateX(-50%) translateY(3px);
   box-shadow: 0 2px 8px rgba(100, 149, 237, 0.3);
+}
+#donateBtn:hover {
+  box-shadow: 0 0 20px rgba(100, 149, 237, 0.8), 0 0 40px rgba(100, 149, 237, 0.4);
+  text-shadow: 0 0 12px rgba(100, 149, 237, 1);
 }
 </style>
 </head>
@@ -49,11 +55,11 @@ canvas {
 
 <script>
 /* ===== CURRENT BLUEPRINT =====
-   Phase 2D Upgrade:
-   - Added Donate button above welcome text
+   Phase 2E Upgrade:
+   - Added glowing effect to Donate button
    - Button clickable to PayPal.me link
-   - Press animation added
-   - Donate button moved up 100px
+   - Press animation and glow on hover
+   - Button remains 100px above welcome text
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -65,7 +71,7 @@ function resize(){
 
   // Update donate button vertical position
   const donateBtn = document.getElementById("donateBtn");
-  donateBtn.style.top = (h/2 - 150) + "px"; // moved 100px up from previous
+  donateBtn.style.top = (h/2 - 150) + "px"; // 100px above welcome text
 }
 window.addEventListener("resize",resize);
 resize();
