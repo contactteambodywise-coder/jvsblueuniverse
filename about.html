@@ -35,16 +35,12 @@ canvas {
   font-size: 60px;
   color: rgba(100,150,255,1);
   margin-bottom: 20px;
+  position: relative;
+  top: 60px; /* shifted down 60px */
 }
-/* ===== BUTTONS ===== */
-#buttonGroup {
-  position: absolute;
-  left: 50%;
-  top: calc(50% - 140px); /* moved down 80px from original -220px */
-  transform: translateX(-50%);
-  z-index: 2;
-}
-.button {
+#donateBtn {
+  display: inline-block;
+  margin-top: 25px;
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
@@ -56,13 +52,12 @@ canvas {
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
   transition: transform 0.1s, box-shadow 0.1s;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  margin: 0 10px;
 }
-.button:active {
+#donateBtn:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-.button:hover {
+#donateBtn:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
   text-shadow: 0 0 12px rgba(100,149,237,1);
 }
@@ -79,15 +74,10 @@ canvas {
     This universe started as a simple spark of curiosity, a love for creativity, and a tiny bit of cosmic mischief. One day, while dreaming up ways to make our world more playful and alive, the <strong>cosmic worm 🪱</strong> appeared — a little guide to remind us that even small, unexpected things can bring joy and wonder.<br><br>
     Our mission is simple: to <strong>explore new ideas, share inspiration, and grow this universe together</strong>. We update our universe daily with new thoughts, experiments, and creative bursts, all designed to surprise and delight.<br><br>
     We believe in <strong>fun, honesty, and heart</strong> — and we hope you feel that the moment you step into our world. If you ever have an idea, question, or just want to say hi, don’t hesitate to email me at <strong>johnbuddy624@gmail.com</strong>.<br><br>
-    And yes — if you’d like to support our universe, the <strong>Donate</strong> button is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
+    And yes — if you’d like to support our universe, the <strong>donate button</strong> is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
     Thank you for being here. We can’t wait to see where this journey takes us, and we’re so glad to have you along for the ride!
   </p>
-</div>
-
-<!-- ===== BUTTONS ===== -->
-<div id="buttonGroup">
-  <button class="button" id="homeBtn">Home</button>
-  <button class="button" id="donateBtn">Donate</button>
+  <button id="donateBtn">Donate</button>
 </div>
 
 <script>
@@ -109,6 +99,24 @@ const stars = Array.from({length:600},()=>({
   a:Math.random()*0.8+0.2,
   r:Math.random()*1.5+0.5
 }));
+
+/* ===== STAR NAMES ===== */
+const nameStars = [];
+const fullNames = "John Bender  Veyra Blue";
+ctx.font = "40px sans-serif";
+for(let i=0; i<fullNames.length; i++){
+  const char = fullNames[i];
+  if(char !== " "){
+    nameStars.push({
+      char: char,
+      x: w/4 + i*28, // starting left
+      y: h/2 - 100,
+      dx: Math.random()*0.2 - 0.1,
+      dy: Math.random()*0.2 - 0.1,
+      alpha: Math.random()*0.6+0.4
+    });
+  }
+}
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -151,6 +159,17 @@ function draw(){
     ctx.fill();
   });
 
+  // Star names floating
+  nameStars.forEach(s=>{
+    s.x += s.dx;
+    s.y += s.dy;
+    if(s.x<0 || s.x>w) s.dx*=-1;
+    if(s.y<0 || s.y>h) s.dy*=-1;
+    ctx.globalAlpha = s.alpha;
+    ctx.fillStyle = "rgba(120,200,255,1)";
+    ctx.fillText(s.char, s.x, s.y);
+  });
+
   // Shooting stars
   shootingStars.forEach((s,i)=>{
     for(let t=0;t<s.trail;t++){
@@ -162,8 +181,8 @@ function draw(){
       ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
       ctx.stroke();
     }
-    s.x += s.vx*s.z;
-    s.y += s.vy*s.z;
+    s.x += s.vx * s.z;
+    s.y += s.vy * s.z;
     if(s.x<0||s.x>w||s.y<0||s.y>h){
       shootingStars.splice(i,1);
     }
@@ -182,7 +201,7 @@ function draw(){
     ctx.globalAlpha = 1 - i*0.015;
     ctx.fillStyle = worm.color;
     ctx.beginPath();
-    ctx.arc(p.x,p.y, worm.size*(1-i*0.012),0,Math.PI*2);
+    ctx.arc(p.x,p.y, worm.size*(1-i*0.012), 0, Math.PI*2);
     ctx.fill();
   });
 
@@ -190,14 +209,11 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON CLICKS ===== */
-document.getElementById("donateBtn").addEventListener("click",()=>{
-  window.open("https://www.paypal.me/JohnBender612","_blank");
-});
-document.getElementById("homeBtn").addEventListener("click",()=>{
-  window.location.href = "index.html"; // replace with your home page URL
+/* ===== DONATE BUTTON CLICK ===== */
+const donateBtn = document.getElementById("donateBtn");
+donateBtn.addEventListener("click",()=>{
+  window.open("https://www.paypal.me/JohnBender612", "_blank");
 });
 </script>
-
 </body>
 </html>
