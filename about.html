@@ -28,7 +28,7 @@ canvas {
   max-width: 800px;
   text-align: center;
   z-index: 2;
-  line-height: 1.4; /* slightly squished vertically */
+  line-height: 1.4;
   font-size: 22px;
 }
 #content h1 {
@@ -36,7 +36,8 @@ canvas {
   color: rgba(100,150,255,1);
   margin-bottom: 20px;
 }
-#homeBtn {
+/* ===== BUTTON STYLES ===== */
+.button {
   display: inline-block;
   margin-top: 25px;
   margin-left: 15px;
@@ -52,11 +53,11 @@ canvas {
   transition: transform 0.1s, box-shadow 0.1s;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
-#homeBtn:active {
+.button:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-#homeBtn:hover {
+.button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
   text-shadow: 0 0 12px rgba(100,149,237,1);
 }
@@ -76,7 +77,8 @@ canvas {
     And yes — if you’d like to support our universe, the <strong>donate button</strong> is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
     Thank you for being here. We can’t wait to see where this journey takes us, and we’re so glad to have you along for the ride!
   </p>
-  <button id="homeBtn">Home</button>
+  <button class="button" id="homeBtn">Home</button>
+  <button class="button" id="donateBtn">Donate</button>
 </div>
 
 <script>
@@ -203,10 +205,12 @@ function draw(){
 }
 draw();
 
-/* ===== HOME BUTTON CLICK ===== */
-const homeBtn = document.getElementById("homeBtn");
-homeBtn.addEventListener("click", ()=>{
+/* ===== BUTTON CLICKS ===== */
+document.getElementById("homeBtn").addEventListener("click", ()=>{
   window.location.href = "index.html";
+});
+document.getElementById("donateBtn").addEventListener("click", ()=>{
+  window.open("https://www.paypal.me/JohnBender612", "_blank");
 });
 </script>
 
