@@ -1,7 +1,3 @@
-<!-- ========================
-     CURRENT BLUEPRINT
-     Do not modify without creating a new request form
-======================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +25,7 @@ canvas {
 
 <script>
 /* =========================
-  META / INFO / DEBUG NOTES
+  CURRENT BLUEPRINT
   =========================
   Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
   Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
@@ -42,11 +38,11 @@ canvas {
     - Tail follows head, fading in alpha & radius
     - Head clamped to canvas edges
     - Works on desktop + mobile
-  New Text Object: "J&V's"
+  Text Object: "J&V's"
     - Top-center
     - Size: 80px
     - Color: cloudy blue
-    - Pulsing invisible → solid
+    - Fixed smooth pulse 0 → 1 alpha
   Locked: Stars, shooting stars, canvas background remain untouched
   Notes for future dev: Segment count, size, velocity, gradient stops adjustable. Keep locked elements safe.
 ========================= */
@@ -89,9 +85,9 @@ setInterval(()=>{if(Math.random()<0.01) spawnShootingStar();},50);
 
 /* ===== COSMIC WORM ===== */
 const worm = {
-  segments:25,           // long flowing body
-  positions:[],           // segment positions
-  size:15,                // head/thin body radius
+  segments:25,
+  positions:[],
+  size:15,
   color:"rgba(0,150,255,0.9)",
   mistColor:"rgba(255,255,100,0.25)",
   vx:(Math.random()-0.5)*1.5,
@@ -184,10 +180,12 @@ function updateWorm(){
 }
 
 function drawTextObj(){
+  // ===== FIXED JV PULSE =====
   textObj.baseAlpha += textObj.pulseSpeed * textObj.alphaDirection;
   if(textObj.baseAlpha>1){textObj.baseAlpha=1;textObj.alphaDirection=-1;}
   if(textObj.baseAlpha<0){textObj.baseAlpha=0;textObj.alphaDirection=1;}
-  const color=textObj.color.replace("ALPHA",textObj.baseAlpha);
+  // Ensure consistent smooth pulse: always between 0 → 1
+  const color=textObj.color.replace("ALPHA",Math.max(0,Math.min(1,textObj.baseAlpha)));
   ctx.font=`bold ${textObj.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
