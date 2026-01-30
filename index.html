@@ -19,14 +19,15 @@ canvas {
 </style>
 </head>
 <body>
-
 <canvas id="space"></canvas>
 
 <script>
 /* ===== CURRENT BLUEPRINT =====
-   Phase 2A Upgrade:
-   - Shooting stars appear 3D with depth, motion blur, and parallax
-   - Nothing else changed
+   Phase 2C Upgrade:
+   - Shooting stars 3D with motion blur
+   - Cosmic worm preserved
+   - Text preserved
+   - Added mouse-interactive 3D parallax stars
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -36,14 +37,25 @@ function resize(){ w=canvas.width=innerWidth; h=canvas.height=innerHeight; }
 window.addEventListener("resize",resize);
 resize();
 
+/* ===== MOUSE TRACKING ===== */
+let mouseX = 0;
+let mouseY = 0;
+window.addEventListener("mousemove",(e)=>{
+  mouseX = e.clientX - w/2;
+  mouseY = e.clientY - h/2;
+});
+
 /* ===== STARS ===== */
 const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
   a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5
+  r:Math.random()*1.5+0.5,
+  baseX:0,
+  baseY:0
 }));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -52,11 +64,11 @@ setInterval(()=>{
     shootingStars.push({
       x:Math.random()*w,
       y:Math.random()*h,
-      z:Math.random()*0.5+0.5, // depth factor
+      z:Math.random()*0.5+0.5,
       vx:(Math.random()*8-4),
       vy:(Math.random()*8-4),
       length:Math.random()*20+10,
-      trail:5 // number of blur segments
+      trail:5
     });
   }
 },40);
@@ -79,12 +91,14 @@ const textWelcome = { text:"Welcome — you belong here", x:()=>w/2, y:()=>h/2, 
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Background stars
+  // Background stars with 3D mouse parallax
   stars.forEach(s=>{
+    let offsetX = mouseX * 0.05 * s.z;
+    let offsetY = mouseY * 0.05 * s.z;
     ctx.globalAlpha=s.a*s.z;
     ctx.fillStyle="white";
     ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
+    ctx.arc(s.baseX + offsetX, s.baseY + offsetY, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
@@ -99,10 +113,8 @@ function draw(){
       ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
       ctx.stroke();
     }
-
     s.x += s.vx * s.z;
     s.y += s.vy * s.z;
-
     if(s.x<0 || s.x>w || s.y<0 || s.y>h){
       shootingStars.splice(i,1);
     }
