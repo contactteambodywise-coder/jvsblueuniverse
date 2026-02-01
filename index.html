@@ -40,12 +40,13 @@ z-index: 0;
 /* ===== BUTTON GROUP STYLES ===== */
 #buttonGroup {
   position: absolute;
-  top: 10%; /* adjust vertical position */
+  top: 15%; /* vertical position for desktop */
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
   display: flex;
-  flex-wrap: wrap; /* allow wrapping if screen is really small */
+  flex-direction: row; /* always horizontal */
+  flex-wrap: wrap; /* allow wrapping if super narrow */
   justify-content: center;
   gap: 15px;
 }
@@ -76,28 +77,30 @@ z-index: 0;
 /* ===== RESPONSIVE BUTTONS ===== */
 @media (max-width: 600px) {
   #buttonGroup {
-    top: 20%;              /* push buttons slightly down */
-    flex-direction: row;    /* horizontal row */
-    flex-wrap: nowrap;      /* prevent stacking */
-    gap: 10px;              /* smaller gap */
-    transform: translateX(-50%);
+    top: 12%;           /* slightly higher for mobile */
+    gap: 8px;           /* tighter spacing */
   }
 
   #buttonGroup button {
-    font-size: 22px;        /* smaller for mobile */
-    padding: 8px 12px;      /* tighter padding */
+    font-size: 20px;
+    padding: 6px 10px;
+  }
+
+  /* Shift welcome text below buttons */
+  #welcomeText {
+    top: 35%;  /* position text below button row */
   }
 }
 
 /* Optional: very small phones */
 @media (max-width: 360px) {
   #buttonGroup {
-    flex-wrap: wrap;        /* allow wrapping if really narrow */
-    gap: 8px;
+    flex-wrap: wrap;   /* allow wrap for tiny phones */
+    gap: 6px;
   }
   #buttonGroup button {
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 18px;
+    padding: 5px 8px;
   }
 }
 /=============================
