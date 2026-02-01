@@ -4,6 +4,7 @@
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
   <title>J&V’s Blue Universe</title>
+  </head>
 <body>
 <style>  
 html, body {  
@@ -19,8 +20,8 @@ canvas {
   position: fixed;  
   inset: 0;  
   z-index: 0;
-</body>
-} 
+}
+
 /* ===== BUTTON GROUP STYLES ===== */
 #buttonGroup {
 position: absolute;
@@ -52,8 +53,7 @@ transform: translateY(3px);
 box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 </style>
-
-</head>  
+  
   
 <canvas id="space"></canvas>  <!-- ===== BUTTONS ===== -->  <div id="buttonGroup">  
   <button id="donateBtn">Donate</button>  
@@ -138,9 +138,10 @@ function draw(){
     ctx.arc(s.x + offsetX, s.y + offsetY, s.r*s.z,0,Math.PI*2);  
     ctx.fill();  
   });  
-  
-  // Shooting stars  
-  shootingStars.forEach((s,i)=>{  
+
+/* =========== SHOOTING STARS ============ */
+
+shootingStars.forEach((s,i)=>{  
     for(let t=0;t<s.trail;t++){  
       const factor = 1 - t/s.trail;  
       ctx.strokeStyle=`rgba(255,255,255,${0.6*factor*s.z})`;  
@@ -155,9 +156,10 @@ function draw(){
     if(s.x<0 || s.x>w || s.y<0 || s.y>h){  
       shootingStars.splice(i,1);  
     }  
-  });  
-  
-  // Cosmic worm  
+  });
+
+/* ============= COSMIC WORM ============= */
+
   let hpos=worm.pos[0];  
   hpos.x+=worm.vx; hpos.y+=worm.vy;  
   if(hpos.x<0||hpos.x>w) worm.vx*=-1;  
@@ -174,18 +176,19 @@ function draw(){
     ctx.fill();  
   });  
   
-  // Text  
-  ctx.globalAlpha=1;  
-  ctx.textAlign="center";  
-  ctx.font=`bold ${textJV.size}px Times New Roman`;  
-  ctx.fillStyle=textJV.color;  
-  ctx.fillText(textJV.text,textJV.x(),textJV.y);  
-  ctx.font=`${textBU.size}px Times New Roman`;  
-  ctx.fillStyle=textBU.color;  
-  ctx.fillText(textBU.text,textBU.x(),textBU.y);  
-  
-  // Wrapped welcome text  
-  ctx.font=`${textWelcome.size}px Times New Roman`;  
+// Text  
+ctx.globalAlpha=1;  
+ctx.textAlign="center";  
+ctx.font=`bold ${textJV.size}px Times New Roman`;  
+ctx.fillStyle=textJV.color;
+ctx.fillText(textJV.text,textJV.x(),textJV.y);  
+ctx.font=`${textBU.size}px Times New Roman`;  
+ctx.fillStyle=textBU.color;  
+ctx.fillText(textBU.text,textBU.x(),textBU.y);
+
+/* ========= WRAPPED WELCOME TEXT ======== */  
+
+ctx.font=`${textWelcome.size}px Times New Roman`;  
   ctx.fillStyle=textWelcome.color;  
   const words = textWelcome.text.split(" ");  
   let line = "";  
@@ -214,7 +217,8 @@ document.getElementById("donateBtn").addEventListener("click", () => {
   window.open("https://otieu.com/4/10549459", "_blank");  
 });  
 document.getElementById("aboutBtn").addEventListener("click", () => {  
-  window.location.href = "about.html"; // link to your about page  
+  window.location.href = "about.html";
 });  
-</script>  </body>  
+  </script>
+</body>
 </html>
