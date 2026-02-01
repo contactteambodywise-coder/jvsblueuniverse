@@ -1,3 +1,6 @@
+//------------------------------
+//--------- LOCK STARTS --------
+//------------------------------
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +22,9 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-
+//----------------------------
+//--------- LOCK ENDS --------
+//----------------------------
 /* ===== BUTTON GROUP STYLES ===== */
 #buttonGroup {
   position: absolute;
@@ -91,7 +96,9 @@ function resize(){
 }
 window.addEventListener("resize",resize);
 resize();
-
+//------------------------------
+//--------- LOCK STARTS --------
+//------------------------------
 /* ===== STARS ===== */
 const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
@@ -129,6 +136,9 @@ const worm={
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
+//----------------------------
+//--------- LOCK ENDS --------
+//----------------------------
 
 /* ===== TEXT OBJECTS ===== */
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
@@ -141,6 +151,9 @@ const textWelcome = {
   color:"rgba(120,170,255,0.8)",
   maxWidth:()=>w * 0.7
 };
+//------------------------------
+//--------- LOCK STARTS --------
+//------------------------------
 
 /* ===== DRAW LOOP ===== */
 function draw(){
@@ -191,7 +204,9 @@ function draw(){
     ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
   });
-
+//----------------------------
+//--------- LOCK ENDS --------
+//----------------------------
   // Text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
