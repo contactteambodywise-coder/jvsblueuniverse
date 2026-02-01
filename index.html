@@ -77,17 +77,19 @@ Purpose: Styles each individual button */
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 
-/* ===== RESPONSIVE BUTTONS =====
-Purpose: Adjusts buttons layout and size for mobile screens (<600px). */
+/* ===== RESPONSIVE BUTTONS (Adjusted) =====
+Purpose: Keep mobile buttons similar to desktop while fitting smaller screens. */
 @media (max-width: 600px) {
   #buttonGroup {
-    top: 50%;
-    flex-direction: column;
+    top: 20%; /* move down a little so not cramped */
+    flex-direction: row; /* keep horizontal like desktop */
+    flex-wrap: wrap; /* allow wrapping if needed */
+    gap: 10px; /* smaller spacing for mobile */
   }
   #buttonGroup button {
-    width: 70%;
-    font-size: 24px;
-    padding: 12px 0;
+    width: auto; /* don’t force 70% width, keep natural size */
+    font-size: 24px; /* slightly smaller font */
+    padding: 8px 16px; /* smaller padding */
   }
 }
 /*=============================
